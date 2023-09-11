@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.0)
+project(emailServer)
+include_directories(./include/)
+include_directories(./include/common/)
+include_directories(./include/smtp/)
+include_directories(./include/thirdparty/socket-cpp/Socket/)
+SET(CMAKE_CXX_FLAGS "-g")
+SET(NET_FILE ./include/thirdparty/socket-cpp/Socket/Socket.cpp 
+./include/thirdparty/socket-cpp/Socket/TCPServer.cpp )
+SET(SMTP_FILE ./src/smtp_server.cpp ./include/smtp/smtp_server_handler.cpp ./include/smtp/CProtoCmd.cpp ./include/common/ProtoUtil.cpp)
+add_executable(emailServer ./src/main.cpp ${NET_FILE} ${SMTP_FILE})
