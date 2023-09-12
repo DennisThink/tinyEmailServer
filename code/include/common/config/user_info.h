@@ -12,6 +12,7 @@ namespace tiny_email
         std::string userPassword_;  
     };
 
+
     struct server_config
     {
         std::string strIp_;
@@ -43,6 +44,7 @@ namespace tiny_email
     {
         std::string date_;
         senderReceiverInfo emailSender_;
+        senderReceiverInfo emailReceiver_;
         SenderReceiverInfoArray copyReceivers_;
         std::string subject_;
         SenderReceiverInfoArray secretReceivers_;
