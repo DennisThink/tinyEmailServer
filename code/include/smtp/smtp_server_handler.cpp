@@ -29,7 +29,8 @@ namespace tiny_email
             {Smtp_Server_Step_t::SMTP_NAME_PASS_VERIFY, Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ,&CSmtpServerHandler::OnNamePassVerifyReq},
             {Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ, Smtp_Server_Step_t::SMTP_RECV_RCPT_TO_REQ,&CSmtpServerHandler::OnMailFromReq},
             {Smtp_Server_Step_t::SMTP_RECV_RCPT_TO_REQ, Smtp_Server_Step_t::SMTP_RECV_DATA_REQ,&CSmtpServerHandler::OnRcptToReq},
-            {Smtp_Server_Step_t::SMTP_RECV_DATA_REQ, Smtp_Server_Step_t::SMTP_END,&CSmtpServerHandler::OnDataReq},
+            {Smtp_Server_Step_t::SMTP_RECV_DATA_REQ, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerHandler::OnDataReq},
+            {Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerHandler::OnData},
     };
 
     bool CSmtpServerHandler::OnClientReq(const std::string strValue)
@@ -117,6 +118,7 @@ namespace tiny_email
     }
     CSmtpServerHandler::~CSmtpServerHandler()
     {
+        std::cout<<"EMAIL Data:  "<<m_emailData<<std::endl;
     }
 
 
@@ -148,8 +150,8 @@ namespace tiny_email
     {
         if(strReq.find("\r\n") != std::string::npos)
         {
-            m_strResponse = "235 Authentication successful\r\n";
-            std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
+            m_strUserName = CProtoUtil::Base64Decode(strReq);
+            std::cout <<__LINE__<<"   strReq:    "<<   strReq <<"   UserName: "<<m_strUserName <<std::endl;
             return true;
         }
         return false;
@@ -157,7 +159,8 @@ namespace tiny_email
     bool CSmtpServerHandler::OnNamePassVerifyReq(const std::string strReq)
     {
         m_strResponse = "235 Authentication successful\r\n";
-        std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
+        m_strPassword = CProtoUtil::Base64Decode(strReq);
+        std::cout <<__LINE__<<"   strReq:    "<<   strReq<<"   Password: "<<m_strPassword <<std::endl;
         return true;
     }
     bool CSmtpServerHandler::OnMailFromReq(const std::string strReq)
@@ -178,7 +181,17 @@ namespace tiny_email
     }
     bool CSmtpServerHandler::OnData(const std::string strReq)
     {
-        return false;
+        m_emailData += strReq;
+       
+        if(m_emailData.find("\r\n.\r\n") != std::string::npos)
+        {
+             std::cout <<__LINE__<<"   Email Data:    "<<   m_emailData <<std::endl;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 

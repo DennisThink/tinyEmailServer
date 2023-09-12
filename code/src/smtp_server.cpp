@@ -35,7 +35,7 @@ void StartSmtpServer()
                 memset(buff, 128, 0);
                 recvLen = -1;
                 recvLen = server.Receive(client, buff, 128, false);
-                if (recvLen < 0)
+                if (recvLen <= 0)
                 {
                     break;
                 }

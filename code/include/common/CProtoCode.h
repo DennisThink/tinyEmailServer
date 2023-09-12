@@ -163,6 +163,7 @@ const std::string strPop3SendQuit ="QUIT\r\n";*/
        SMTP_RECV_MAIL_FROM_REQ,
        SMTP_RECV_RCPT_TO_REQ,
        SMTP_RECV_DATA_REQ,
+       SMTP_RECV_EMAIL_DATA,
        SMTP_END,
     };
     enum Smtp_Step_t
