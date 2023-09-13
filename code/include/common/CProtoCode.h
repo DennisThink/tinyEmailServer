@@ -65,7 +65,7 @@ const std::string strPop3SendQuit ="QUIT\r\n";*/
         POP3_PASS_WORD_RSP,
     };
 
-    enum class POP3_STEP_t:int {
+    enum class POP3_SERVER_STEP_t:int {
         POP3_STEP_BEGIN,
         POP3_STEP_SERVER_ON_CONNECT,
         POP3_STEP_SERVER_SEND_USER_NAME_OK,
