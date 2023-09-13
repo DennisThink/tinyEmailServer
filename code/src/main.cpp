@@ -4,7 +4,7 @@
 int main(int argc,char * argv[])
 {
     std::cout<<"tinyEmailServer"<<std::endl;
-    //StartSmtpServer();
-    StartPop3Server();
+    StartSmtpServer();
+    //StartPop3Server();
     return 0;
 }

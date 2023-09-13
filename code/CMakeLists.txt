@@ -22,6 +22,6 @@ SET(SQLITE_CPP_FILE ./include/thirdparty/SQLiteCpp/src/Backup.cpp
                     ./include/thirdparty/SQLiteCpp/src/Statement.cpp 
                     ./include/thirdparty/SQLiteCpp/src/Transaction.cpp)
 SET(SQLITE_FILE ./include/thirdparty/sqlite/sqlite3.c)
-SET(SQLITE_DB_FILE ./include/database/SqliteDataBase.cpp)
-add_executable(emailServer ./src/main.cpp ${NET_FILE} ${SMTP_FILE} ${POP3_FILE})
-add_executable(database_demo ./src/data_base_demo.cpp ${SQLITE_DB_FILE} ${SQLITE_CPP_FILE} ${SQLITE_FILE})
+SET(SQLITE_DB_FILE ./include/database/SqliteDataBase.cpp ./include/common/config/user_info.cpp)
+add_executable(emailServer ./src/main.cpp ${NET_FILE} ${SMTP_FILE} ${POP3_FILE} ${SQLITE_CPP_FILE} ${SQLITE_FILE} ${SQLITE_DB_FILE})
+add_executable(database_demo ./src/data_base_demo.cpp ${SQLITE_DB_FILE} ${SQLITE_CPP_FILE} ${SQLITE_FILE} ${SMTP_FILE} ${NET_FILE})

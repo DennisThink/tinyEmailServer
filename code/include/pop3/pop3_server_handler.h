@@ -15,7 +15,8 @@ namespace tiny_email
         virtual ~CPop3ServerHandler();
         bool OnUser(const std::string& strUser);
         bool OnPassword(const std::string& strPasswd);
-        bool OnNoOp(const std::string &strRecv);
+        bool OnNoOp(const std::string& strRecv);
+        bool OnState(const std::string& strRecv);
     private:
         std::string GetNextStepCmd(const POP3_SERVER_STEP_t& step);
         bool OnRecv(const std::string &strRecv);

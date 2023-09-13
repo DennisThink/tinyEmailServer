@@ -77,6 +77,7 @@ namespace tiny_email
             return false;
         }
     };
+    bool ParseEmailForSmtp(const std::string& strContext,email_info_t& email);
     bool ParseEmailFromRecv(const std::string& strContext,email_info_t& email);
     using EmailInfoArray_t = std::vector<email_info_t>;
 }

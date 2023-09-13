@@ -1,4 +1,5 @@
 #include "smtp_server_handler.h"
+#include "SqliteDataBase.h"
 #include "CProtoCmd.h"
 #include "ProtoUtil.h"
 #include <iostream>
@@ -10,6 +11,7 @@ namespace tiny_email
         m_step = Smtp_Server_Step_t::SMTP_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
         m_step = Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST;
+        m_db = std::make_shared<CSqliteDataBase>("email_test.db");
     }
 
     bool (CSmtpServerHandler::*pFunc)(const std::string strReq);
@@ -31,6 +33,7 @@ namespace tiny_email
             {Smtp_Server_Step_t::SMTP_RECV_RCPT_TO_REQ, Smtp_Server_Step_t::SMTP_RECV_DATA_REQ,&CSmtpServerHandler::OnRcptToReq},
             {Smtp_Server_Step_t::SMTP_RECV_DATA_REQ, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerHandler::OnDataReq},
             {Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerHandler::OnData},
+            {Smtp_Server_Step_t::SMTP_END,Smtp_Server_Step_t::SMTP_END,&CSmtpServerHandler::OnClientReq},
     };
 
     bool CSmtpServerHandler::OnClientReq(const std::string strValue)
@@ -158,8 +161,20 @@ namespace tiny_email
     }
     bool CSmtpServerHandler::OnNamePassVerifyReq(const std::string strReq)
     {
-        m_strResponse = "235 Authentication successful\r\n";
         m_strPassword = CProtoUtil::Base64Decode(strReq);
+        if(m_db)
+        {
+            if(m_db->IsPasswordRight(m_strUserName,m_strPassword))
+            {
+                m_strResponse = "235 Authentication successful\r\n";
+            }
+            else
+            {
+                std::cout<<"Error"<<std::endl;
+                m_strResponse = "";
+                m_step = Smtp_Server_Step_t::SMTP_END;
+            }
+        }
         std::cout <<__LINE__<<"   strReq:    "<<   strReq<<"   Password: "<<m_strPassword <<std::endl;
         return true;
     }
@@ -185,7 +200,16 @@ namespace tiny_email
        
         if(m_emailData.find("\r\n.\r\n") != std::string::npos)
         {
-             std::cout <<__LINE__<<"   Email Data:    "<<   m_emailData <<std::endl;
+            std::cout <<__LINE__<<"   Email Data:    "<<   m_emailData <<std::endl;
+            email_info_t email;
+            bool bRet = ParseEmailForSmtp(m_emailData,email);
+            if(bRet)
+            {
+                if(m_db)
+                {
+                    m_db->SaveSendMailInfo(email);
+                }
+            }
             return true;
         }
         else

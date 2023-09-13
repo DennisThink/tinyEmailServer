@@ -78,16 +78,11 @@ namespace tiny_email
 
     bool CSqliteDataBase::IsPasswordRight(std::string strUserName, std::string strPassword)
     {
-        if (IsUserExist(strUserName))
+        for(auto item:m_userArray)
         {
-            std::string strUser = GetUserNameFromEmailAddr(strUserName);
-            if (strPassword == strUser)
+            if(strUserName == item.userName_ && strPassword == item.userPassword_)
             {
                 return true;
-            }
-            else
-            {
-                return false;
             }
         }
         return false;

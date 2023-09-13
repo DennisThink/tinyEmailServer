@@ -1,7 +1,49 @@
 #include "user_info.h"
-#include "../util/ProtoUtil.h"
+#include "ProtoUtil.h"
 namespace tiny_email 
 {
+
+    bool ParseEmailForSmtp(const std::string& strContext,email_info_t& email)
+    {
+        StringArray parseArray = CProtoUtil::SplitStringByLine(strContext);
+        std::size_t index = 0;
+        std::size_t Count = parseArray.size();
+        for(index = 0 ; index < Count ; index++)
+        {
+            if(parseArray[index].find("From: ") != std::string::npos)
+            {
+                std::string strName;
+                std::string strAddr;
+                CProtoUtil::ParseFromToString(parseArray[index],strName,strAddr);
+                email.emailSender_=senderReceiverInfo(strAddr);
+            }
+            
+            if(parseArray[index].find("To: ") != std::string::npos)
+            {
+                std::string strName;
+                std::string strAddr;
+                CProtoUtil::ParseFromToString(parseArray[index],strName,strAddr);
+                email.emailReceiver_.name_ = strName;
+                email.emailReceiver_.emailAddr_ = strAddr;
+            }
+
+            if(parseArray[index].find("Subject:") != std::string::npos)
+            {
+                std::size_t startPos = std::string("Subject:").length();
+                email.subject_ = parseArray[index].substr(startPos,parseArray[index].length()-startPos);
+            }
+
+            if(parseArray[index] == "\r\n")
+            {
+                while(index < Count)
+                {
+                    email.context_.append(parseArray[index]);
+                    index++;
+                }
+            }
+        }
+        return true;
+    }
     bool ParseEmailFromRecv(const std::string& strContext,email_info_t& email)
     {
         StringArray parseArray = CProtoUtil::SplitStringByLine(strContext);
