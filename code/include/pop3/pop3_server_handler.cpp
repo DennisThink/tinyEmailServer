@@ -24,8 +24,9 @@ namespace tiny_email
     Pop3ServerStepElem stepArrayPop[] = {
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK,POP3_CMD_t::POP3_CMD_USER_NAME,&CPop3ServerHandler::OnUser},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_PASS_WORD,&CPop3ServerHandler::OnPassword},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_NOOP_OK,POP3_CMD_t::POP3_CMD_USER_NAME,&CPop3ServerHandler::OnNoOp},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_NOOP_OK,POP3_CMD_t::POP3_CMD_USER_NAME,&CPop3ServerHandler::OnNoOp},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_STAT,&CPop3ServerHandler::OnState},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_RETR,&CPop3ServerHandler::OnNoOp},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_LIST,&CPop3ServerHandler::OnList},
     };
     bool CPop3ServerHandler::OnClientReq(const std::string strValue)
     {
@@ -39,7 +40,10 @@ namespace tiny_email
                 if (m_step == stepArrayPop[i].curStep_ && reqCmd.GetCode() == stepArrayPop[i].cmdCode_)
                 {
                     bool bRet = (this->*stepArrayPop[i].callback_)(strValue);
-                    m_strResponse = GetNextStepCmd(m_step);
+                    if(m_strResponse.empty())
+                    {
+                        m_strResponse = GetNextStepCmd(m_step);
+                    }
                     m_step = stepArrayPop[i].nextStep_;
                     return true;
                 }
@@ -63,6 +67,24 @@ namespace tiny_email
         std::cout << "EMAIL Data:  " << m_emailData << std::endl;
     }
 
+    bool CPop3ServerHandler::OnState(const std::string& strRecv)
+    {
+        m_strResponse = "+OK 1 102\r\n";
+        return true;
+    }
+    bool CPop3ServerHandler::OnRetr(const std::string& strRecv)
+    {
+        m_strResponse = "+OK 1 102\r\n";
+        return true;
+    }
+
+    bool CPop3ServerHandler::OnList(const std::string& strRecv)
+    {
+        m_strResponse = "+OK 1 102\r\n";
+        m_strResponse += "1 102\r\n";
+        m_strResponse += ".\r\n";
+        return true;
+    }
     std::string CPop3ServerHandler::GetPassWordOkSend()
     {
         return "";
@@ -88,7 +110,7 @@ namespace tiny_email
         break;
         case POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK:
         {
-            return "+OK core mail pass word(cpp email)\r\n";
+            return "+OK 1 message(s) [102 byte(s)]\r\n";
         }
         break;
         case POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_BAD:

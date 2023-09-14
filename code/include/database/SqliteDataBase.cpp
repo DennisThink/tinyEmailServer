@@ -20,10 +20,10 @@ namespace tiny_email
                     std::string strCreateUserTable("CREATE TABLE T_USER(ID INTEGER PRIMARY KEY AUTOINCREMENT,USER_NAME TEXT,PASS_WORD TEXT);");
                     SQLite::Transaction tr(*g_db);
                     g_db->exec(strCreateUserTable);
-                    g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test\", \"test_pass\");");
                     std::string strCreateSendEmailTable("CREATE TABLE T_EMAIL_SEND(ID INTEGER PRIMARY KEY AUTOINCREMENT,SENDER TEXT,RECEIVER TEXT,SUBJECT TEXT,CONTENT TEXT);");
                     g_db->exec(strCreateSendEmailTable);
                     tr.commit();
+                    InitDemoData();
                 }
                 catch (std::exception &ec2)
                 {
@@ -31,9 +31,17 @@ namespace tiny_email
                 }
             }
         }
+
         InitUserArrayFromDB();
     }
 
+    void CSqliteDataBase::InitDemoData()
+    {
+        SQLite::Transaction tr(*g_db);
+        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test1\", \"test1_pass\");");
+        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test2\", \"test2_pass\");");
+        tr.commit();
+    }
     void CSqliteDataBase::InitUserArrayFromDB()
     {
         if (g_db)
