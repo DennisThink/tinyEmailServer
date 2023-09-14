@@ -17,6 +17,17 @@ int main(int argc,char * argv[])
     info.subject_ = "Demo Test";
     info.context_ = "test";
     db.SaveSendMailInfo(info);
+    tiny_email::EmailInfoArray_t emailArray;
+    if(db.GetRecvMailInfo("test1",emailArray))
+    {
+        for(auto item:emailArray)
+        {
+            std::cout<<"Sender: "<<item.emailSender_.name_<<std::endl;
+            std::cout<<"Receiver: "<<item.emailReceiver_.name_<<std::endl;
+            std::cout<<"Subject: "<<item.subject_<<std::endl;
+            std::cout<<"Content: "<<item.context_<<std::endl;
+        }
+    }
     std::cout<<"database_demo"<<std::endl;
     return 0;
 }

@@ -2,6 +2,7 @@
 #include "CProtoCmd.h"
 #include "CPop3ProtoCmd.h"
 #include "ProtoUtil.h"
+#include "SqliteDataBase.h"
 #include <iostream>
 namespace tiny_email
 {
@@ -10,6 +11,7 @@ namespace tiny_email
         m_strEmailDomain = "pop.test.com";
         m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
+        m_db = std::make_shared<CSqliteDataBase>("email_test.db");
     }
 
     bool (CPop3ServerHandler::*pFunc3)(const std::string &strReq);
@@ -22,17 +24,17 @@ namespace tiny_email
     };
 
     Pop3ServerStepElem stepArrayPop[] = {
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK,POP3_CMD_t::POP3_CMD_USER_NAME,&CPop3ServerHandler::OnUser},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_PASS_WORD,&CPop3ServerHandler::OnPassword},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_STAT,&CPop3ServerHandler::OnState},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_RETR,&CPop3ServerHandler::OnNoOp},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK,POP3_CMD_t::POP3_CMD_LIST,&CPop3ServerHandler::OnList},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_CMD_t::POP3_CMD_USER_NAME, &CPop3ServerHandler::OnUser},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_PASS_WORD, &CPop3ServerHandler::OnPassword},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_STAT, &CPop3ServerHandler::OnState},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerHandler::OnNoOp},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_LIST, &CPop3ServerHandler::OnList},
     };
     bool CPop3ServerHandler::OnClientReq(const std::string strValue)
     {
         CPop3ProtoReqCmd reqCmd;
         PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strValue, reqCmd);
-        std::cout<<"Result: "<<static_cast<int>(result)<<" Code: "<<static_cast<int>(reqCmd.GetCode())<<" Msg: "<<reqCmd.GetMessage()<<std::endl;
+        std::cout << "Result: " << static_cast<int>(result) << " Code: " << static_cast<int>(reqCmd.GetCode()) << " Msg: " << reqCmd.GetMessage() << std::endl;
         if (result == PARSE_POP3_RESULT::PARSE_POP3_SUCCEED)
         {
             for (std::size_t i = 0; i < sizeof(stepArrayPop) / sizeof(stepArrayPop[0]); i++)
@@ -40,7 +42,7 @@ namespace tiny_email
                 if (m_step == stepArrayPop[i].curStep_ && reqCmd.GetCode() == stepArrayPop[i].cmdCode_)
                 {
                     bool bRet = (this->*stepArrayPop[i].callback_)(strValue);
-                    if(m_strResponse.empty())
+                    if (m_strResponse.empty())
                     {
                         m_strResponse = GetNextStepCmd(m_step);
                     }
@@ -67,22 +69,34 @@ namespace tiny_email
         std::cout << "EMAIL Data:  " << m_emailData << std::endl;
     }
 
-    bool CPop3ServerHandler::OnState(const std::string& strRecv)
+    bool CPop3ServerHandler::OnState(const std::string &strRecv)
     {
         m_strResponse = "+OK 1 102\r\n";
         return true;
     }
-    bool CPop3ServerHandler::OnRetr(const std::string& strRecv)
+    bool CPop3ServerHandler::OnRetr(const std::string &strRecv)
     {
         m_strResponse = "+OK 1 102\r\n";
         return true;
     }
 
-    bool CPop3ServerHandler::OnList(const std::string& strRecv)
+    bool CPop3ServerHandler::OnList(const std::string &strRecv)
     {
-        m_strResponse = "+OK 1 102\r\n";
-        m_strResponse += "1 102\r\n";
-        m_strResponse += ".\r\n";
+        if (m_db)
+        {
+            m_emailArray.clear();
+            m_db->GetRecvMailInfo(m_strUserName, m_emailArray);
+        }
+        if (!m_emailArray.empty())
+        {
+            std::size_t count = m_emailArray.size();
+            m_strResponse = "+OK "+std::to_string(count)+ "102\r\n";
+            for(std::size_t i = 1; i < count ; i++)
+            {
+                m_strResponse+=std::to_string(i)+" 102\r\n";
+            }
+            m_strResponse+=".\r\n";
+        }
         return true;
     }
     std::string CPop3ServerHandler::GetPassWordOkSend()
@@ -151,12 +165,17 @@ namespace tiny_email
         }
     }
 
-    bool CPop3ServerHandler::OnUser(const std::string& strUser)
+    bool CPop3ServerHandler::OnUser(const std::string &strUser)
     {
         if (true)
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK;
-            // m_UserInfo.userName_ = strUser;
+            CPop3ProtoReqCmd reqCmd;
+            PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strUser, reqCmd);
+            if (result == PARSE_POP3_RESULT::PARSE_POP3_SUCCEED)
+            {
+                m_strUserName = reqCmd.GetMessage();
+            }
             return true;
         }
         else
@@ -166,17 +185,32 @@ namespace tiny_email
         }
     }
 
-    bool CPop3ServerHandler::OnPassword(const std::string& strPasswd)
+    bool CPop3ServerHandler::OnPassword(const std::string &strPasswd)
     {
         if (true)
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK;
-            // m_UserInfo.userPassword_ = strPasswd;
-            return true;
+            CPop3ProtoReqCmd reqCmd;
+            PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strPasswd, reqCmd);
+            if (result == PARSE_POP3_RESULT::PARSE_POP3_SUCCEED)
+            {
+                m_strPassword = reqCmd.GetMessage();
+            }
+            if (m_db && m_db->IsPasswordRight(m_strUserName, m_strPassword))
+            {
+                std::cout << "User:  " << m_strUserName << "  Password Match" << std::endl;
+                return true;
+            }
+            else
+            {
+                std::cerr << "User:  " << m_strUserName << "Pass:" <<m_strPassword<< "  Password Not Match" << std::endl;
+                return false;
+            }
         }
         else
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_BAD;
+
             return false;
         }
     }

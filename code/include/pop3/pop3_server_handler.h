@@ -33,6 +33,7 @@ namespace tiny_email
         int m_errorCmdCount;
         std::string m_strResponse;
         CDataBaseInterface_SHARED_PTR m_db;
+        EmailInfoArray_t m_emailArray;
     public:
     };
 }

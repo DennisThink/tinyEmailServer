@@ -121,22 +121,30 @@ namespace tiny_email
     }
 
     // call multi to get all
-    bool CSqliteDataBase::GetRecvMailInfo(const std::string userName, EmailInfoArray_t &email)
+    bool CSqliteDataBase::GetRecvMailInfo(const std::string userName, EmailInfoArray_t &emailArray)
     {
-        std::cout << userName << std::endl;
-        EmailInfoArray_t lastEmails;
-        for (const auto &item : m_sendMails)
+        if (g_db)
         {
-            if (item.IsReceiver(userName))
+            try
             {
-                email.push_back(item);
+                std::string strQueryEmailReceive = "SELECT SENDER,RECEIVER,SUBJECT,CONTENT FROM T_EMAIL_SEND WHERE RECEIVER == ?";
+                SQLite::Statement query(*g_db, strQueryEmailReceive);
+                query.bind(1,userName);
+                while (query.executeStep())
+                {
+                    email_info_t email;
+                    email.emailSender_.name_ = query.getColumn(0).getString();
+                    email.emailReceiver_.name_ = query.getColumn(1).getString();
+                    email.subject_ = query.getColumn(2).getString();
+                    email.context_ = query.getColumn(3).getString();
+                    emailArray.push_back(email);
+                }
+                return true;
             }
-            else
+            catch (std::exception &ec)
             {
-                lastEmails.push_back(item);
             }
         }
-        m_sendMails = lastEmails;
-        return true;
+        return false;
     }
 }
