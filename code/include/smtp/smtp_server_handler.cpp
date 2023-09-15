@@ -69,10 +69,10 @@ namespace tiny_email
         if (step == Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST)
         {
             std::string strFirst = "250-mail\r\n";
-            std::string strAuth1 = "250-AUTH LOGIN PLAIN\r\n";
-            std::string strAuth2 = "250-AUTH=LOGIN PLAIN\r\n";
+            std::string strAuth1 = "250-AUTH LOGIN\r\n";
+            std::string strAuth2 = "250-AUTH=LOGIN\r\n";
             std::string str8BitTime = "250 8BITMIME\r\n";
-            return strFirst + strAuth1 + strAuth2 + str8BitTime;
+            return strFirst +strAuth1 + str8BitTime;
         }
         if (step == Smtp_Server_Step_t::SMTP_RECV_AUTH_LOGIN_REQ)
         {
@@ -128,9 +128,18 @@ namespace tiny_email
 
     bool CSmtpServerHandler::OnEhloReq(const std::string strReq)
     {
+        std::cout<<"REQ: "<<strReq<<std::endl;
         if(strReq.find("\r\n") != std::string::npos)
         {
-            if(strReq.find("HELO ") != std::string::npos && strReq.find(m_strEmailDomain) != std::string::npos)
+            if(strReq.find("HELO ") != std::string::npos)
+            {
+                std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
+                return true;
+            }
+        }
+        if(strReq.find("\r\n") != std::string::npos)
+        {
+            if(strReq.find("EHLO") != std::string::npos)
             {
                 std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
                 return true;

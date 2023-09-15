@@ -85,7 +85,12 @@ namespace tiny_email
         const std::string strPop3SendNoop ="NOOP\r\n";
         const std::string strPop3SendList ="LIST\r\n";
         const std::string strPop3SendQuit ="QUIT\r\n";*/
-        if (strPrefix == "QUIT\r\n")
+        if (strPrefix == "CAPA\r\n")
+        {
+            cmd = CPop3ProtoReqCmd(POP3_CMD_t::POP3_CMD_CAPA, "");
+            return PARSE_POP3_RESULT::PARSE_POP3_SUCCEED;
+        }
+        else if (strPrefix == "QUIT\r\n")
         {
             cmd = CPop3ProtoReqCmd(POP3_CMD_t::POP3_CMD_QUIT, "");
             return PARSE_POP3_RESULT::PARSE_POP3_SUCCEED;

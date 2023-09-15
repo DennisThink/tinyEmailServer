@@ -11,11 +11,12 @@ void StartSmtpServer()
     ASocket::Socket client;
     char buff[128] = {0};
     int recvLen = 0;
+    auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>("sock_cpp_email.db");
     while (true)
     {
         if (server.Listen(client, 1000))
         {
-            auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>("sock_cpp_email.db");
+            
             tiny_email::CSmtpServerHandler handler(dbPtr);
 
             while (true)
@@ -44,6 +45,12 @@ void StartSmtpServer()
                 if (recvLen > 0)
                 {
                     std::string strReq(buff,recvLen);
+                    std::cout<<"Char Recv: ";
+                    for(std::size_t i = 0 ; i < recvLen ; i++)
+                    {
+                        std::cout<<buff[i];
+                    }
+                    std::cout<<std::endl;
                     std::cout << "Recv: " << strReq << std::endl;
                     if (handler.OnClientReq(strReq))
                     {

@@ -32,6 +32,7 @@ namespace tiny_email
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_STAT, &CPop3ServerHandler::OnState},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerHandler::OnNoOp},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_LIST, &CPop3ServerHandler::OnList},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_CMD_t::POP3_CMD_CAPA, &CPop3ServerHandler::OnCapa},
         };
         CPop3ProtoReqCmd reqCmd;
         PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strValue, reqCmd);
@@ -77,7 +78,18 @@ namespace tiny_email
     }
     bool CPop3ServerHandler::OnRetr(const std::string &strRecv)
     {
-        m_strResponse = "+OK 1 102\r\n";
+        m_strResponse = R"(Date: Tue, 29 Aug 2023 07:08:51 +0800 (CST)
+From: test2@test.com
+To: test1@test.com
+Message-ID: <2053286275.7139059.1693264131639>
+Subject: test tiny email
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+this is the test email from tiny email server
+
+.
+)";
         return true;
     }
 
@@ -98,6 +110,26 @@ namespace tiny_email
             }
             m_strResponse+=".\r\n";
         }
+        return true;
+    }
+
+    bool CPop3ServerHandler::OnCapa(const std::string& strRecv)
+    {
+        m_strResponse=R"(+OK Capability list follows
+LANG
+TOP
+USER
+UTF8
+STLS
+PIPELINING
+SASL(PLAIN XOAUTH2)
+ID
+UIDL
+SASL PLAIN
+STLS
+.
+
+)";
         return true;
     }
     std::string CPop3ServerHandler::GetPassWordOkSend()

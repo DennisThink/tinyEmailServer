@@ -40,16 +40,6 @@ namespace tiny_email
         PARSE_POP3_SYNTAX_ERROR,
         PARSE_POP3_FAILED,
     };
-/*
-const std::string strPop3SendUser="USER dennismi\r\n";
-const std::string strPop3SendPasswd="PASS srpPr9MXwp285Su\r\n";
-const std::string strPop3SendStat ="STAT\r\n";
-const std::string strPop3SendUidl ="UIDL 1\r\n";
-const std::string strPop3SendRetr ="RETR 1\r\n";
-const std::string strPop3SendNoop ="NOOP\r\n";
-const std::string strPop3SendDel  ="DELE 1\r\n";
-const std::string strPop3SendList ="LIST\r\n";
-const std::string strPop3SendQuit ="QUIT\r\n";*/
     enum class POP3_CMD_t:int{
         POP3_CMD_NO_CMD,
         POP3_CMD_USER_NAME,
@@ -61,6 +51,7 @@ const std::string strPop3SendQuit ="QUIT\r\n";*/
         POP3_CMD_DELE,
         POP3_CMD_LIST,
         POP3_CMD_QUIT,
+        POP3_CMD_CAPA,
         POP3_USER_NAME_RSP,
         POP3_PASS_WORD_RSP,
     };
