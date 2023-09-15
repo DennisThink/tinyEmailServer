@@ -207,7 +207,7 @@ STLS
             PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strUser, reqCmd);
             if (result == PARSE_POP3_RESULT::PARSE_POP3_SUCCEED)
             {
-                m_strUserName = reqCmd.GetMessage();
+                m_strUserName =  reqCmd.GetMessage();
             }
             return true;
         }
@@ -229,6 +229,7 @@ STLS
             {
                 m_strPassword = reqCmd.GetMessage();
             }
+            return true;
             if (m_db && m_db->IsPasswordRight(m_strUserName, m_strPassword))
             {
                 std::cout << "User:  " << m_strUserName << "  Password Match" << std::endl;

@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.0)
 project(socket_cpp_email_server)
+set(CMAKE_CXX_STANDARD 11)
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+message("Windows")
+add_definitions(-DWINDOWS)
+
+else()
+endif()
 include_directories(../../include/)
 include_directories(../../include/common/)
 include_directories(../../include/smtp/)

@@ -6,7 +6,7 @@
 auto logFunc2 = [](const std::string strRsp) {};
 void StartPop3Server()
 {
-    std::string strPort = "110";
+    std::string strPort = "2110";
     CTCPServer server(logFunc2, strPort);
     ASocket::Socket client;
     char buff[128] = {0};

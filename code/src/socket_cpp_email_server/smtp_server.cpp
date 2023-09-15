@@ -6,7 +6,7 @@
 auto logFunc = [](const std::string strRsp) {};
 void StartSmtpServer()
 {
-    std::string strPort = "25";
+    std::string strPort = "2125";
     CTCPServer server(logFunc, strPort);
     ASocket::Socket client;
     char buff[128] = {0};

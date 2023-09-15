@@ -5,6 +5,7 @@ include_directories(${INC_BASE}/database/)
 include_directories(${INC_BASE}/database/)
 include_directories(${INC_BASE}/thirdparty/asio/)
 include_directories(${INC_BASE}/thirdparty/)
+include_directories(${INC_BASE}/thirdparty/sqlite/)
 include_directories(${INC_BASE}/thirdparty/json11/)
 include_directories(${INC_BASE}/common/)
 include_directories(${INC_BASE}/common/config/)
@@ -36,8 +37,17 @@ SET(EMAIL_SERVER CEmailServer.h CEmailServer.cpp
                  ${INC_BASE}/common/ProtoUtil.cpp
                  ${INC_BASE}/common/config/user_info.cpp
                  # DataBase
-                 ${INC_BASE}/database/CMemDataBase.cpp
+                 ${INC_BASE}/database/SqliteDataBase.cpp
                  )
-SET(SOURCE_FILE ${EMAIL_SERVER} main.cpp )
+SET(SQLITE_CPP_FILE ../../include/thirdparty/SQLiteCpp/src/Backup.cpp  
+../../include/thirdparty/SQLiteCpp/src/Column.cpp 
+../../include/thirdparty/SQLiteCpp/src/Database.cpp 
+../../include/thirdparty/SQLiteCpp/src/Exception.cpp 
+../../include/thirdparty/SQLiteCpp/src/Savepoint.cpp 
+../../include/thirdparty/SQLiteCpp/src/Statement.cpp 
+../../include/thirdparty/SQLiteCpp/src/Transaction.cpp)
+
+SET(SQLITE_FILE ../../include/thirdparty/sqlite/sqlite3.c)
+SET(SOURCE_FILE ${EMAIL_SERVER} main.cpp ${SQLITE_CPP_FILE} ${SQLITE_FILE})
 add_executable(emailServer ${SOURCE_FILE})
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../bin) 
