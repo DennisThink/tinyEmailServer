@@ -24,6 +24,7 @@ namespace tiny_email
  
     bool CSmtpServerHandler::OnClientReq(const std::string strValue)
     {
+        //或许直接指定下一步的状态不是一个好的选择，此处考虑优化
         static struct SmtpServerStepElem stepArray[] =
         {
             {Smtp_Server_Step_t::SMTP_BEGIN, Smtp_Server_Step_t::SMTP_ON_CONNECT,&CSmtpServerHandler::OnEhloReq},
@@ -52,7 +53,10 @@ namespace tiny_email
                         m_step = stepArray[i].nextStep;
                         return true;
                     }
-                   
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -69,8 +73,8 @@ namespace tiny_email
         if (step == Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST)
         {
             std::string strFirst = "250-mail\r\n";
-            std::string strAuth1 = "250-AUTH LOGIN\r\n";
-            std::string strAuth2 = "250-AUTH=LOGIN\r\n";
+            std::string strAuth1 = "250-AUTH LOGIN PLAIN\r\n";
+            std::string strAuth2 = "250-AUTH=LOGIN PLAIN\r\n";
             std::string str8BitTime = "250 8BITMIME\r\n";
             return strFirst +strAuth1 + str8BitTime;
         }
@@ -155,6 +159,16 @@ namespace tiny_email
             {
                 std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
                 return true;
+            }
+        }
+        if(strReq.find("\r\n") != std::string::npos)
+        {
+            if(strReq.find("AUTH PLAIN") != std::string::npos)
+            {
+                m_strResponse="235 2.7.0 Authentication successful\r\n";
+                m_step = Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ;
+                std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
+                return false;
             }
         }
         return false;

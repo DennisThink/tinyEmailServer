@@ -29,6 +29,7 @@ namespace tiny_email
     public:
         bool OnEhloReq(const std::string strReq);
         bool OnAuthLoginReq(const std::string strReq);
+        bool OnAuthPlainReq(const std::string strReq);
         bool OnPasswordReq(const std::string strReq);
         bool OnNamePassVerifyReq(const std::string strReq);
         bool OnMailFromReq(const std::string strReq);
