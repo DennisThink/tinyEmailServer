@@ -6,12 +6,12 @@
 #include <iostream>
 namespace tiny_email
 {
-    CPop3ServerHandler::CPop3ServerHandler()
+    CPop3ServerHandler::CPop3ServerHandler(CDataBaseInterface_SHARED_PTR dbPtr)
     {
         m_strEmailDomain = "pop.test.com";
         m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
-        m_db = std::make_shared<CSqliteDataBase>("email_test.db");
+        m_db = dbPtr;
     }
 
     bool (CPop3ServerHandler::*pFunc3)(const std::string &strReq);
@@ -23,15 +23,16 @@ namespace tiny_email
         decltype(pFunc3) callback_;
     };
 
-    Pop3ServerStepElem stepArrayPop[] = {
+  
+    bool CPop3ServerHandler::OnClientReq(const std::string strValue)
+    {
+        static Pop3ServerStepElem stepArrayPop[] = {
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_CMD_t::POP3_CMD_USER_NAME, &CPop3ServerHandler::OnUser},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_PASS_WORD, &CPop3ServerHandler::OnPassword},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_STAT, &CPop3ServerHandler::OnState},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerHandler::OnNoOp},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_LIST, &CPop3ServerHandler::OnList},
-    };
-    bool CPop3ServerHandler::OnClientReq(const std::string strValue)
-    {
+        };
         CPop3ProtoReqCmd reqCmd;
         PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strValue, reqCmd);
         std::cout << "Result: " << static_cast<int>(result) << " Code: " << static_cast<int>(reqCmd.GetCode()) << " Msg: " << reqCmd.GetMessage() << std::endl;

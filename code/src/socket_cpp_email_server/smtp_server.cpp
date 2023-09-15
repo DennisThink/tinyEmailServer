@@ -2,6 +2,7 @@
 #include "TCPServer.h"
 #include "Socket.h"
 #include "smtp_server_handler.h"
+#include "SqliteDataBase.h"
 auto logFunc = [](const std::string strRsp) {};
 void StartSmtpServer()
 {
@@ -14,7 +15,8 @@ void StartSmtpServer()
     {
         if (server.Listen(client, 1000))
         {
-            tiny_email::CSmtpServerHandler handler;
+            auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>("sock_cpp_email.db");
+            tiny_email::CSmtpServerHandler handler(dbPtr);
 
             while (true)
             {

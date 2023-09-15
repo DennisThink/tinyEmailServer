@@ -2,7 +2,7 @@
 #include "pop3_server_handler.h"
 #include "TCPServer.h"
 #include "Socket.h"
-#include "smtp_server_handler.h"
+#include "SqliteDataBase.h"
 auto logFunc2 = [](const std::string strRsp) {};
 void StartPop3Server()
 {
@@ -15,7 +15,8 @@ void StartPop3Server()
     {
         if (server.Listen(client, 1000))
         {
-            tiny_email::CPop3ServerHandler handler;
+            auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>("sock_cpp_email.db");
+            tiny_email::CPop3ServerHandler handler(dbPtr);
 
             while (true)
             {
