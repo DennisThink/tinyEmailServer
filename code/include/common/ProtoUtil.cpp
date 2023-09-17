@@ -125,13 +125,22 @@ namespace tiny_email
 
   bool CProtoUtil::ParseFromToString(const std::string strInput, std::string &name, std::string &emailAddr)
   {
-    if (strInput.find("From: ") != std::string::npos ||
-        strInput.find("To: ") != std::string::npos)
+     auto index = strInput.find(":");
+    if (index)
     {
-      auto addrStartPos = strInput.find("<");
-      auto addrEndPos = strInput.find(">");
-      emailAddr = strInput.substr(addrStartPos + 1, addrEndPos - addrStartPos - 1);
-      name = emailAddr;
+      std::string strValue = strInput.substr(index+1,strInput.length()-index-1);
+      auto addrStartPos = strValue.find("<");
+      auto addrEndPos = strValue.find(">");
+      if(addrEndPos != std::string::npos && addrStartPos != std::string::npos)
+      {
+        emailAddr = strValue.substr(addrStartPos + 1, addrEndPos - addrStartPos - 1);
+        name = emailAddr;
+      }
+      else
+      {
+        emailAddr = strValue;
+        name=strValue;
+      }
       return true;
     }
     return false;

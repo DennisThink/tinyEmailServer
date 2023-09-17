@@ -11,6 +11,7 @@ namespace tiny_email
     public:
         CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr);
         bool OnClientReq(const std::string strValue);
+        bool IsFinished();
         std::string GetResponse();
         std::string GetUserName();
         std::string GetPassowrd();
@@ -26,6 +27,7 @@ namespace tiny_email
         int m_errorCmdCount;
         std::string m_strResponse;
         CDataBaseInterface_SHARED_PTR m_db;
+        bool m_bFinished;
     public:
         bool OnEhloReq(const std::string strReq);
         bool OnAuthLoginReq(const std::string strReq);

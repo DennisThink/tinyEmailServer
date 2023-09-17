@@ -12,6 +12,12 @@ namespace tiny_email
         m_strResponse = GetNextStepCmd(m_step);
         m_step = Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST;
         m_db = dbPtr;
+        m_bFinished = false;
+    }
+
+    bool CSmtpServerHandler::IsFinished()
+    {
+        return m_bFinished;
     }
 
     bool (CSmtpServerHandler::*pFunc)(const std::string strReq);
@@ -234,6 +240,7 @@ namespace tiny_email
                     m_db->SaveSendMailInfo(email);
                 }
             }
+            m_bFinished = true;
             return true;
         }
         else

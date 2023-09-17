@@ -21,7 +21,6 @@ void StartSmtpServer()
 
             while (true)
             {
-
                 std::string strRsp = handler.GetResponse();
                 if (!strRsp.empty())
                 {
@@ -59,6 +58,11 @@ void StartSmtpServer()
                     {
                         std::cout<<"Handle Client Failed"<<std::endl;
                     }
+                }
+                if(handler.IsFinished())
+                {
+                    std::cout<<"Break Finished"<<std::endl;
+                    break;
                 }
             }
             server.Disconnect(client);

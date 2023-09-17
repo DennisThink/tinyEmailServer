@@ -98,13 +98,14 @@ this is the test email from tiny email server
         if (m_db)
         {
             m_emailArray.clear();
+            std::cout<<"USER: "<<m_strUserName<<std::endl;
             m_db->GetRecvMailInfo(m_strUserName, m_emailArray);
         }
         if (!m_emailArray.empty())
         {
             std::size_t count = m_emailArray.size();
             m_strResponse = "+OK "+std::to_string(count)+ "102\r\n";
-            for(std::size_t i = 1; i < count ; i++)
+            for(std::size_t i = 1; i <= count ; i++)
             {
                 m_strResponse+=std::to_string(i)+" 102\r\n";
             }
