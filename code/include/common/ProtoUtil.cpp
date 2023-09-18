@@ -21,15 +21,25 @@ namespace tiny_email
     return strvec;
   }
 
-  std::string &CProtoUtil::Trim(std::string &s)
+  std::string CProtoUtil::Trim(const std::string &s)
   {
-    if (s.empty())
+    std::string strValue = s;
+    if (strValue.empty())
     {
-      return s;
+      return strValue;
     }
-    s.erase(0, s.find_first_not_of(" "));
-    s.erase(s.find_last_not_of(" ") + 1);
-    return s;
+    auto startIndex = strValue.find_first_of(" ");
+    auto endIndex = strValue.rfind(" ",strValue.length());
+    if (startIndex != std::string::npos)
+    {
+      strValue = strValue.substr(startIndex+1,strValue.length()-startIndex-1);
+    }
+
+     if (endIndex != std::string::npos)
+     {
+       strValue = strValue.substr(0,endIndex);
+     }
+    return strValue;
   }
 
   bool CProtoUtil::SplitLine(const std::string &strInput, int &code, std::string &value, bool &bFinish)
@@ -125,13 +135,13 @@ namespace tiny_email
 
   bool CProtoUtil::ParseFromToString(const std::string strInput, std::string &name, std::string &emailAddr)
   {
-     auto index = strInput.find(":");
+    auto index = strInput.find(":");
     if (index)
     {
-      std::string strValue = strInput.substr(index+1,strInput.length()-index-1);
+      std::string strValue = strInput.substr(index + 1, strInput.length() - index - 1);
       auto addrStartPos = strValue.find("<");
       auto addrEndPos = strValue.find(">");
-      if(addrEndPos != std::string::npos && addrStartPos != std::string::npos)
+      if (addrEndPos != std::string::npos && addrStartPos != std::string::npos)
       {
         emailAddr = strValue.substr(addrStartPos + 1, addrEndPos - addrStartPos - 1);
         name = emailAddr;
@@ -139,11 +149,30 @@ namespace tiny_email
       else
       {
         emailAddr = strValue;
-        name=strValue;
+        name = strValue;
       }
       return true;
     }
     return false;
+  }
+
+  std::string CProtoUtil::CreateUserAddrFromNameAndDomain(const std::string strName, const std::string strDomain)
+  {
+    auto index = strName.find("@");
+    if (index != std::string::npos)
+    {
+      return Trim(strName);
+    }
+    else
+    {
+      auto ptIndex = strDomain.find(".");
+      if (ptIndex != std::string::npos)
+      {
+        std::string strTail = strDomain.substr(ptIndex + 1, strDomain.length() - ptIndex - 1);
+        return strName + "@" + strTail;
+      }
+    }
+    return "";
   }
   std::string CProtoUtil::Base64Decode(const std::string encoded_string)
   {

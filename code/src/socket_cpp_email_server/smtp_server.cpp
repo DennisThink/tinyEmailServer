@@ -18,8 +18,8 @@ void StartSmtpServer()
     {
         if (server.Listen(client, 1000))
         {
-            
-            tiny_email::CSmtpServerHandler handler(dbPtr);
+            std::string strDomain =  "smtp.test.com";   
+            tiny_email::CSmtpServerHandler handler(dbPtr,strDomain);
 
             while (true)
             {

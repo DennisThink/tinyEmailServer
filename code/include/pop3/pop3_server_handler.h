@@ -10,7 +10,7 @@ namespace tiny_email
     class CPop3ServerHandler
     {
     public:
-        CPop3ServerHandler(CDataBaseInterface_SHARED_PTR dbPtr);
+        CPop3ServerHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);
         bool OnClientReq(const std::string strValue);
         std::string GetResponse();
         virtual ~CPop3ServerHandler();

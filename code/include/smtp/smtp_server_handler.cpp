@@ -7,9 +7,9 @@
 namespace tiny_email
 {
     static auto g_log = GetLogger();
-    CSmtpServerHandler::CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr)
+    CSmtpServerHandler::CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName)
     {
-        m_strEmailDomain = "smtp.test.com";
+        m_strEmailDomain = strDomainName;
         m_step = Smtp_Server_Step_t::SMTP_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
         m_step = Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST;

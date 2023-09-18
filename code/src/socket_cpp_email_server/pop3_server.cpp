@@ -19,7 +19,8 @@ void StartPop3Server()
         if (server.Listen(client, 1000))
         {
             auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>("sock_cpp_email.db");
-            tiny_email::CPop3ServerHandler handler(dbPtr);
+            std::string strDomain =  "pop.test.com";   
+            tiny_email::CPop3ServerHandler handler(dbPtr,strDomain);
 
             while (true)
             {

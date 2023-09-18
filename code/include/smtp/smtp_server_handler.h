@@ -9,7 +9,7 @@ namespace tiny_email
     class CSmtpServerHandler
     {
     public:
-        CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr);
+        CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);
         bool OnClientReq(const std::string strValue);
         bool IsFinished();
         std::string GetResponse();
