@@ -3,7 +3,9 @@
 #include "TCPServer.h"
 #include "Socket.h"
 #include "SqliteDataBase.h"
+#include "LogUtil.h"
 auto logFunc2 = [](const std::string strRsp) {};
+static auto g_log = GetLogger();
 void StartPop3Server()
 {
     std::string strPort = "2110";
@@ -27,11 +29,11 @@ void StartPop3Server()
                 {
                     if (server.Send(client, strRsp))
                     {
-                        //LOG_INFO(logger,"S: {}",strRsp);
+                        LOG_INFO(g_log,"S: {}",strRsp);
                     }
                     else
                     {
-                        std::cout << "Send Failed" << std::endl;
+                        LOG_ERROR(g_log,"Send Failed:  {}",strRsp);
                         break;
                     }
                 }
@@ -45,13 +47,13 @@ void StartPop3Server()
                 if (recvLen > 0)
                 {
                     std::string strReq(buff,recvLen);
-                    std::cout << "Recv: " << strReq << std::endl;
+                    LOG_INFO(g_log,"C: {}",strReq);
                     if (handler.OnClientReq(strReq))
                     {
                     }
                     else
                     {
-                        std::cout<<"Handle Client Failed"<<std::endl;
+                        LOG_ERROR(g_log,"Handle Client Req Failed");
                     }
                 }
             }

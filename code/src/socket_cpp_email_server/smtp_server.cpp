@@ -3,7 +3,9 @@
 #include "Socket.h"
 #include "smtp_server_handler.h"
 #include "SqliteDataBase.h"
+#include "LogUtil.h"
 auto logFunc = [](const std::string strRsp) {};
+static auto g_log = GetLogger();
 void StartSmtpServer()
 {
     std::string strPort = "2125";
@@ -26,11 +28,11 @@ void StartSmtpServer()
                 {
                     if (server.Send(client, strRsp))
                     {
-                        std::cout << "S: " << strRsp << std::endl;
+                        LOG_INFO(g_log,"S:{}",strRsp);
                     }
                     else
                     {
-                        std::cout << "Send Failed" << std::endl;
+                        LOG_ERROR(g_log,"Send Failed {}",strRsp);
                         break;
                     }
                 }
@@ -44,24 +46,18 @@ void StartSmtpServer()
                 if (recvLen > 0)
                 {
                     std::string strReq(buff,recvLen);
-                    std::cout<<"Char Recv: ";
-                    for(std::size_t i = 0 ; i < recvLen ; i++)
-                    {
-                        std::cout<<buff[i];
-                    }
-                    std::cout<<std::endl;
-                    std::cout << "Recv: " << strReq << std::endl;
+                    LOG_INFO(g_log,"C:{}",strReq);
                     if (handler.OnClientReq(strReq))
                     {
                     }
                     else
                     {
-                        std::cout<<"Handle Client Failed"<<std::endl;
+                        LOG_ERROR(g_log,"Handle Client Failed");
                     }
                 }
                 if(handler.IsFinished())
                 {
-                    std::cout<<"Break Finished"<<std::endl;
+                    LOG_INFO(g_log,"Break Finished");
                     break;
                 }
             }

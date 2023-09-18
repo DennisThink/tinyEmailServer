@@ -2,9 +2,11 @@
 #include "SqliteDataBase.h"
 #include "CProtoCmd.h"
 #include "ProtoUtil.h"
+#include "LogUtil.h"
 #include <iostream>
 namespace tiny_email
 {
+    static auto g_log = GetLogger();
     CSmtpServerHandler::CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr)
     {
         m_strEmailDomain = "smtp.test.com";
@@ -138,12 +140,10 @@ namespace tiny_email
 
     bool CSmtpServerHandler::OnEhloReq(const std::string strReq)
     {
-        std::cout<<"REQ: "<<strReq<<std::endl;
         if(strReq.find("\r\n") != std::string::npos)
         {
             if(strReq.find("HELO ") != std::string::npos)
             {
-                std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
                 return true;
             }
         }
@@ -151,7 +151,6 @@ namespace tiny_email
         {
             if(strReq.find("EHLO") != std::string::npos)
             {
-                std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
                 return true;
             }
         }
@@ -163,7 +162,6 @@ namespace tiny_email
         {
             if(strReq.find("AUTH LOGIN") != std::string::npos)
             {
-                std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
                 return true;
             }
         }
@@ -173,7 +171,6 @@ namespace tiny_email
             {
                 m_strResponse="235 2.7.0 Authentication successful\r\n";
                 m_step = Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ;
-                std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
                 return false;
             }
         }
@@ -184,7 +181,6 @@ namespace tiny_email
         if(strReq.find("\r\n") != std::string::npos)
         {
             m_strUserName = CProtoUtil::Base64Decode(strReq);
-            std::cout <<__LINE__<<"   strReq:    "<<   strReq <<"   UserName: "<<m_strUserName <<std::endl;
             return true;
         }
         return false;
@@ -200,28 +196,24 @@ namespace tiny_email
             }
             else
             {
-                std::cout<<"Error"<<std::endl;
+                LOG_ERROR(g_log,"UserName or password not right {}",__LINE__);
                 m_strResponse = "";
                 m_step = Smtp_Server_Step_t::SMTP_END;
             }
         }
-        std::cout <<__LINE__<<"   strReq:    "<<   strReq<<"   Password: "<<m_strPassword <<std::endl;
         return true;
     }
     bool CSmtpServerHandler::OnMailFromReq(const std::string strReq)
     {
         m_strResponse = "235 Authentication successful\r\n";
-        std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
         return true;
     }
     bool CSmtpServerHandler::OnRcptToReq(const std::string strReq)
     {
-        std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
         return true;
     }
     bool CSmtpServerHandler::OnDataReq(const std::string strReq)
     {
-        std::cout <<__LINE__<<"   strReq:    "<<   strReq <<std::endl;
         return true;
     }
     bool CSmtpServerHandler::OnData(const std::string strReq)
@@ -230,7 +222,6 @@ namespace tiny_email
        
         if(m_emailData.find("\r\n.\r\n") != std::string::npos)
         {
-            std::cout <<__LINE__<<"   Email Data:    "<<   m_emailData <<std::endl;
             email_info_t email;
             bool bRet = ParseEmailForSmtp(m_emailData,email);
             if(bRet)
