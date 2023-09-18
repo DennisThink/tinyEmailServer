@@ -12,6 +12,7 @@ namespace tiny_email
         m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
         m_db = dbPtr;
+        //m_log=std::make_shared<LogConsole>();
     }
 
     bool (CPop3ServerHandler::*pFunc3)(const std::string &strReq);

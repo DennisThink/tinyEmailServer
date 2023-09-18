@@ -4,6 +4,7 @@
 #include "CProtoCode.h"
 #include "DataBaseInterface.h"
 #include <string>
+#include "LogBase.h"
 namespace tiny_email
 {
     class CPop3ServerHandler
@@ -35,6 +36,7 @@ namespace tiny_email
         int m_errorCmdCount;
         std::string m_strResponse;
         CDataBaseInterface_SHARED_PTR m_db;
+        //LogBase_S_PTR m_log;
         EmailInfoArray_t m_emailArray;
     public:
     };

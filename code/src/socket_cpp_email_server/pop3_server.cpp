@@ -11,6 +11,7 @@ void StartPop3Server()
     ASocket::Socket client;
     char buff[128] = {0};
     int recvLen = 0;
+    //auto logger = std::make_shared<tiny_email::LogSpdlog>();
     while (true)
     {
         if (server.Listen(client, 1000))
@@ -26,7 +27,7 @@ void StartPop3Server()
                 {
                     if (server.Send(client, strRsp))
                     {
-                        std::cout << "S: " << strRsp << std::endl;
+                        //LOG_INFO(logger,"S: {}",strRsp);
                     }
                     else
                     {
