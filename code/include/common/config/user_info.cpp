@@ -23,14 +23,14 @@ namespace tiny_email
                 std::string strName;
                 std::string strAddr;
                 CProtoUtil::ParseFromToString(parseArray[index],strName,strAddr);
-                email.emailReceiver_.name_ = strName;
-                email.emailReceiver_.emailAddr_ = strAddr;
+                email.emailReceiver_.name_ = CProtoUtil::Trim(strName);
+                email.emailReceiver_.emailAddr_ = CProtoUtil::Trim(strAddr);
             }
 
             if(parseArray[index].find("Subject:") != std::string::npos)
             {
                 std::size_t startPos = std::string("Subject:").length();
-                email.subject_ = parseArray[index].substr(startPos,parseArray[index].length()-startPos);
+                email.subject_ = CProtoUtil::Trim(parseArray[index].substr(startPos,parseArray[index].length()-startPos));
             }
 
             if(parseArray[index] == "\r\n")

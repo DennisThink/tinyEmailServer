@@ -192,6 +192,7 @@ namespace tiny_email
         {
             if(m_db->IsPasswordRight(m_strUserName,m_strPassword))
             {
+                LOG_INFO(g_log,"User {} verify Passed",m_strUserName);
                 m_strResponse = "235 Authentication successful\r\n";
             }
             else
@@ -229,6 +230,7 @@ namespace tiny_email
                 if(m_db)
                 {
                     m_db->SaveSendMailInfo(email);
+                    LOG_INFO(g_log,"User {} email save succeed",m_strUserName);
                 }
             }
             m_bFinished = true;

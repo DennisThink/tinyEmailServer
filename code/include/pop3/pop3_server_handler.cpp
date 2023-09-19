@@ -33,7 +33,7 @@ namespace tiny_email
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_CMD_t::POP3_CMD_USER_NAME, &CPop3ServerHandler::OnUser},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_PASS_WORD, &CPop3ServerHandler::OnPassword},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_STAT, &CPop3ServerHandler::OnState},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerHandler::OnNoOp},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerHandler::OnRetr},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_LIST, &CPop3ServerHandler::OnList},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_CMD_t::POP3_CMD_CAPA, &CPop3ServerHandler::OnCapa},
         };
@@ -91,6 +91,8 @@ Content-Type: text/plain; charset=utf-8
 this is the test email from tiny email server
 
 .
+
+
 )";
         return true;
     }
@@ -105,7 +107,7 @@ this is the test email from tiny email server
         if (!m_emailArray.empty())
         {
             std::size_t count = m_emailArray.size();
-            m_strResponse = "+OK "+std::to_string(count)+ "102\r\n";
+            m_strResponse = "+OK "+std::to_string(count)+ " 102\r\n";
             for(std::size_t i = 1; i <= count ; i++)
             {
                 m_strResponse+=std::to_string(i)+" 102\r\n";
@@ -115,6 +117,7 @@ this is the test email from tiny email server
         return true;
     }
 
+    //Todo: the ability should be modified
     bool CPop3ServerHandler::OnCapa(const std::string& strRecv)
     {
         m_strResponse=R"(+OK Capability list follows
@@ -144,7 +147,8 @@ STLS
         {
         case POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT:
         {
-            return "+OK Welcome to pop.test.com\r\n";
+            std::string strResponse = "+OK Welcome to " + m_strEmailDomain+ "\r\n";
+            return strResponse;
         }
         break;
         case POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK:
@@ -202,15 +206,14 @@ STLS
 
     bool CPop3ServerHandler::OnUser(const std::string &strUser)
     {
-        if (true)
+        LOG_INFO(g_log,"USER:{} {}",strUser,__LINE__);
+        CPop3ProtoReqCmd cmd;
+        PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strUser, cmd);
+        if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK;
-            CPop3ProtoReqCmd reqCmd;
-            PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strUser, reqCmd);
-            if (result == PARSE_POP3_RESULT::PARSE_POP3_SUCCEED)
-            {
-                m_strUserName =  reqCmd.GetMessage();
-            }
+            m_strUserName = CProtoUtil::CreateUserAddrFromNameAndDomain(CProtoUtil::Trim(cmd.GetMessage()),m_strEmailDomain);
+            LOG_INFO(g_log,"User: {} is login on Pop3",m_strUserName);
             return true;
         }
         else
@@ -222,16 +225,14 @@ STLS
 
     bool CPop3ServerHandler::OnPassword(const std::string &strPasswd)
     {
-        if (true)
+        CPop3ProtoReqCmd cmd;
+        PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strPasswd, cmd);
+        if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK;
-            CPop3ProtoReqCmd reqCmd;
-            PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strPasswd, reqCmd);
-            if (result == PARSE_POP3_RESULT::PARSE_POP3_SUCCEED)
-            {
-                m_strPassword = reqCmd.GetMessage();
-            }
-            return true;
+
+            m_strPassword = CProtoUtil::Trim(cmd.GetMessage());
+            LOG_INFO(g_log,"USER:{} Pass:{} ",m_strUserName,m_strPassword);
             if (m_db && m_db->IsPasswordRight(m_strUserName, m_strPassword))
             {
                 LOG_INFO(g_log,"User: {} Verify Succeed",m_strUserName);

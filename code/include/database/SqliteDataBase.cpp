@@ -38,8 +38,8 @@ namespace tiny_email
     void CSqliteDataBase::InitDemoData()
     {
         SQLite::Transaction tr(*g_db);
-        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test1\", \"test1_pass\");");
-        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test2\", \"test2_pass\");");
+        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test1@test.com\", \"test1_pass\");");
+        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test2@test.com\", \"test2_pass\");");
         tr.commit();
     }
     void CSqliteDataBase::InitUserArrayFromDB()

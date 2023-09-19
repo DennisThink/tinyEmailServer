@@ -28,18 +28,29 @@ namespace tiny_email
     {
       return strValue;
     }
-    auto startIndex = strValue.find_first_of(" ");
-    auto endIndex = strValue.rfind(" ",strValue.length());
-    if (startIndex != std::string::npos)
+    std::size_t nCount = strValue.length();
+    std::size_t nStartPos = 0;
+    for (nStartPos = 0; nStartPos < nCount; nStartPos++)
     {
-      strValue = strValue.substr(startIndex+1,strValue.length()-startIndex-1);
+      if ((s[nStartPos] != ' ')&&
+          (s[nStartPos] != '\r') &&
+          (s[nStartPos] != '\n'))
+      {
+        break;
+      }
     }
 
-     if (endIndex != std::string::npos)
-     {
-       strValue = strValue.substr(0,endIndex);
-     }
-    return strValue;
+    std::size_t nStopPos = nCount - 1;
+    for (nStopPos = nCount - 1; nStopPos > 0; nStopPos--)
+    {
+      if ((s[nStopPos] != ' ')&&
+          (s[nStopPos] != '\r') &&
+          (s[nStopPos] != '\n'))
+      {
+        break;
+      }
+    }
+    return strValue.substr(nStartPos,nStopPos-nStartPos+1);
   }
 
   bool CProtoUtil::SplitLine(const std::string &strInput, int &code, std::string &value, bool &bFinish)
