@@ -1,5 +1,6 @@
 #include "SqliteDataBase.h"
 #include "SQLiteCpp/SQLiteCpp.h"
+#include "ProtoUtil.h"
 #include <iostream>
 namespace tiny_email
 {
@@ -20,7 +21,7 @@ namespace tiny_email
                     std::string strCreateUserTable("CREATE TABLE T_USER(ID INTEGER PRIMARY KEY AUTOINCREMENT,USER_NAME TEXT,PASS_WORD TEXT);");
                     SQLite::Transaction tr(*g_db);
                     g_db->exec(strCreateUserTable);
-                    std::string strCreateSendEmailTable("CREATE TABLE T_EMAIL_SEND(ID INTEGER PRIMARY KEY AUTOINCREMENT,SENDER TEXT,RECEIVER TEXT,SUBJECT TEXT,CONTENT TEXT);");
+                    std::string strCreateSendEmailTable("CREATE TABLE T_EMAIL_SEND(ID INTEGER PRIMARY KEY AUTOINCREMENT,SENDER TEXT,RECEIVER TEXT,SUBJECT TEXT,CONTENT TEXT,TIME TEXT);");
                     g_db->exec(strCreateSendEmailTable);
                     tr.commit();
                     InitDemoData();
@@ -103,12 +104,13 @@ namespace tiny_email
         {
             try
             {
-                std::string strInsertEmailSend = "INSERT INTO T_EMAIL_SEND(SENDER,RECEIVER,SUBJECT,CONTENT) VALUES(?,?,?,?)";
+                std::string strInsertEmailSend = "INSERT INTO T_EMAIL_SEND(SENDER,RECEIVER,SUBJECT,CONTENT,TIME) VALUES(?,?,?,?,?)";
                 SQLite::Statement query(*g_db, strInsertEmailSend);
                 query.bind(1,email.emailSender_.name_);
                 query.bind(2,email.emailReceiver_.name_);
                 query.bind(3,email.subject_);
                 query.bind(4,email.context_);
+                query.bind(5,std::to_string(email.emailTime_));
                 query.exec();
                 bResult = true;
             }

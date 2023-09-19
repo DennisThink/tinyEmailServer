@@ -1,5 +1,9 @@
 #include "ProtoUtil.h"
 #include <iostream>
+#include <ctime>
+#include <iostream>
+#include <iterator>
+#include <locale>
 namespace tiny_email
 {
   // Copy from QT
@@ -185,6 +189,20 @@ namespace tiny_email
     }
     return "";
   }
+
+  std::time_t CProtoUtil::Now()
+  {
+    return time(nullptr);
+  }
+
+  std::string CProtoUtil::TimeToString(const std::time_t t)
+  {
+    char timeString[std::size("yyyy-mm-ddThh:mm:ssZ")]={0};
+    std::strftime(std::data(timeString), std::size(timeString),
+                  "%FT%TZ", std::gmtime(&t));
+    return timeString;
+  }
+
   std::string CProtoUtil::Base64Decode(const std::string encoded_string)
   {
     std::size_t in_len = encoded_string.size();

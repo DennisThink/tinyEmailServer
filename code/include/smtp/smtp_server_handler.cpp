@@ -229,6 +229,7 @@ namespace tiny_email
             {
                 if(m_db)
                 {
+                    email.emailTime_ = CProtoUtil::Now();
                     m_db->SaveSendMailInfo(email);
                     LOG_INFO(g_log,"User {} email save succeed",m_strUserName);
                 }

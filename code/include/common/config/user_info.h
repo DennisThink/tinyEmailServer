@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <ctime>
 namespace tiny_email
 {
     using StringArray = std::vector<std::string>; 
@@ -50,6 +51,7 @@ namespace tiny_email
         SenderReceiverInfoArray secretReceivers_;
         std::string context_;
         std::size_t emailBytes_;
+        std::time_t emailTime_;
     public:
         bool IsReceiver(const std::string strUser) const
         {
