@@ -44,6 +44,17 @@ namespace tiny_email
         }
         return true;
     }
+
+    bool Pop3RspFromEmail(const email_info_t&email,std::string& strRsp)
+    {
+        std::string strDate="Date: "+CProtoUtil::TimeToString(email.emailTime_)+"\r\n";
+        std::string strFrom = "From: "+email.emailSender_.emailAddr_+" \r\n";
+        std::string strTo = "To: "+email.emailReceiver_.emailAddr_+" \r\n";
+        std::string strSubject = "Subject: "+email.subject_ +"  \r\n";
+        std::string strContent = "\r\n"+email.context_+" \r\n.\r\n";
+        strRsp = strDate+strFrom+strTo+strSubject+strContent;
+        return true;
+    }
     bool ParseEmailFromRecv(const std::string& strContext,email_info_t& email)
     {
         StringArray parseArray = CProtoUtil::SplitStringByLine(strContext);

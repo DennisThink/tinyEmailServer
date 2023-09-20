@@ -81,6 +81,7 @@ namespace tiny_email
     };
     bool ParseEmailForSmtp(const std::string& strContext,email_info_t& email);
     bool ParseEmailFromRecv(const std::string& strContext,email_info_t& email);
+    bool Pop3RspFromEmail(const email_info_t&email,std::string& strRsp);
     using EmailInfoArray_t = std::vector<email_info_t>;
 }
 #endif

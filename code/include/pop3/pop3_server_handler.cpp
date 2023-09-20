@@ -80,21 +80,27 @@ namespace tiny_email
     }
     bool CPop3ServerHandler::OnRetr(const std::string &strRecv)
     {
-        m_strResponse = R"(Date: Tue, 29 Aug 2023 07:08:51 +0800 (CST)
-From: test2@test.com
-To: test1@test.com
-Message-ID: <2053286275.7139059.1693264131639>
-Subject: test tiny email
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        LOG_INFO(g_log,"RETR:{} {}",strRecv,__LINE__);
+        CPop3ProtoReqCmd cmd;
+        PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strRecv, cmd);
+        if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
+        {
+            std::size_t nIndex = std::atoll(cmd.GetMessage().c_str());
+            if(nIndex > m_emailArray.size())
+            {
+                nIndex = m_emailArray.size()-1;
+            }
+            else
+            {
 
-this is the test email from tiny email server
-
-.
-
-
-)";
-
+            }
+            std::string strRsp;
+            if(Pop3RspFromEmail(m_emailArray[nIndex],strRsp))
+            {
+                m_strResponse = strRsp;
+            }
+        }
+        LOG_INFO(g_log,"RETR Rsp:{}",m_strResponse);
         return true;
     }
 
