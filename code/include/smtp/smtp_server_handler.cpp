@@ -174,6 +174,15 @@ namespace tiny_email
                 return false;
             }
         }
+         if(strReq.find("\r\n") != std::string::npos)
+        {
+            if(strReq.find("AUTH CRAM-MD5") != std::string::npos)
+            {
+                m_strResponse="NOT Supportr\n";
+                m_step = Smtp_Server_Step_t::SMTP_END;
+                return false;
+            }
+        }
         return false;
     }
     bool CSmtpServerHandler::OnPasswordReq(const std::string strReq)

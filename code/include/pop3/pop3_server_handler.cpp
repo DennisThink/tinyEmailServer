@@ -124,9 +124,11 @@ namespace tiny_email
         return true;
     }
 
-    //Todo: the ability should be modified
+    //Todo: the ability should be modified,extend command, support later
     bool CPop3ServerHandler::OnCapa(const std::string& strRecv)
     {
+        m_strResponse="-ERR\r\n";
+        return true;
         m_strResponse=R"(+OK Capability list follows
 LANG
 TOP

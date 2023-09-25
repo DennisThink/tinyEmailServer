@@ -106,6 +106,11 @@ namespace tiny_email
             cmd = CPop3ProtoReqCmd(POP3_CMD_t::POP3_CMD_NOOP, "");
             return PARSE_POP3_RESULT::PARSE_POP3_SUCCEED;
         }
+        else if (strPrefix == "AUTH CRAM-MD5\r\n")
+        {
+            cmd = CPop3ProtoReqCmd(POP3_CMD_t::POP3_AUTH_CRAM_MD5, "");
+            return PARSE_POP3_RESULT::PARSE_POP3_SUCCEED;
+        }
         else
         {
             return PARSE_POP3_RESULT::PARSE_POP3_FAILED;

@@ -42,6 +42,7 @@ namespace tiny_email
     };
     enum class POP3_CMD_t:int{
         POP3_CMD_NO_CMD,
+        POP3_AUTH_CRAM_MD5,
         POP3_CMD_USER_NAME,
         POP3_CMD_PASS_WORD,
         POP3_CMD_STAT,
