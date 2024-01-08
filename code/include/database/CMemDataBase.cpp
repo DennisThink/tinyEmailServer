@@ -69,4 +69,14 @@ namespace tiny_email
         m_sendMails = lastEmails;
         return true;
     }
+
+
+    bool CMemDataBase::AddUser(std::string strUserName,std::string strPassword)
+    {
+        return false;
+    }
+    bool CMemDataBase::RemoveUser(std::string strUserName)
+    {
+        return false;
+    }
 }

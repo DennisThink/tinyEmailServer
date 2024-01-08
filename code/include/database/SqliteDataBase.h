@@ -6,7 +6,8 @@ namespace tiny_email
     class CSqliteDataBase:public CDataBaseInterface
     {
     public:
-        
+        virtual bool AddUser(std::string strUserName,std::string strPassword) override final;
+        virtual bool RemoveUser(std::string strUserName) override final;
         virtual bool IsUserExist(std::string strUserName)override final;
         virtual bool IsPasswordRight(std::string strUserName,std::string strPassword)override final;
         virtual bool SaveSendMailInfo(const email_info_t& email) override final;

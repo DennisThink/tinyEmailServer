@@ -9,6 +9,8 @@ namespace tiny_email
     {
     public:
         virtual ~CDataBaseInterface()=default;
+        virtual bool AddUser(std::string strUserName,std::string strPassword)=0;
+        virtual bool RemoveUser(std::string strUserName)=0;
         virtual bool IsUserExist(std::string strUserName)=0;
         virtual bool IsPasswordRight(std::string strUserName,std::string strPasswd)=0;
         virtual bool SaveSendMailInfo(const email_info_t& email)=0;

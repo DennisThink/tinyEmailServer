@@ -28,7 +28,7 @@ namespace tiny_email
                 }
                 catch (std::exception &ec2)
                 {
-                    std::cout<<"Exception:  "<<ec2.what()<<std::endl;
+                    std::cout << "Exception:  " << ec2.what() << std::endl;
                 }
             }
         }
@@ -45,6 +45,7 @@ namespace tiny_email
     }
     void CSqliteDataBase::InitUserArrayFromDB()
     {
+        m_userArray.clear();
         if (g_db)
         {
             try
@@ -73,6 +74,7 @@ namespace tiny_email
         }
         return strEmailAddr;
     }
+
     bool CSqliteDataBase::IsUserExist(std::string strUserName)
     {
         for (auto &item : m_userArray)
@@ -87,9 +89,9 @@ namespace tiny_email
 
     bool CSqliteDataBase::IsPasswordRight(std::string strUserName, std::string strPassword)
     {
-        for(auto item:m_userArray)
+        for (auto item : m_userArray)
         {
-            if(strUserName == item.userName_ && strPassword == item.userPassword_)
+            if (strUserName == item.userName_ && strPassword == item.userPassword_)
             {
                 return true;
             }
@@ -106,11 +108,11 @@ namespace tiny_email
             {
                 std::string strInsertEmailSend = "INSERT INTO T_EMAIL_SEND(SENDER,RECEIVER,SUBJECT,CONTENT,TIME) VALUES(?,?,?,?,?)";
                 SQLite::Statement query(*g_db, strInsertEmailSend);
-                query.bind(1,email.emailSender_.name_);
-                query.bind(2,email.emailReceiver_.name_);
-                query.bind(3,email.subject_);
-                query.bind(4,email.context_);
-                query.bind(5,std::to_string(email.emailTime_));
+                query.bind(1, email.emailSender_.name_);
+                query.bind(2, email.emailReceiver_.name_);
+                query.bind(3, email.subject_);
+                query.bind(4, email.context_);
+                query.bind(5, std::to_string(email.emailTime_));
                 query.exec();
                 bResult = true;
             }
@@ -131,7 +133,7 @@ namespace tiny_email
             {
                 std::string strQueryEmailReceive = "SELECT SENDER,RECEIVER,SUBJECT,CONTENT FROM T_EMAIL_SEND WHERE RECEIVER == ?";
                 SQLite::Statement query(*g_db, strQueryEmailReceive);
-                query.bind(1,userName);
+                query.bind(1, userName);
                 while (query.executeStep())
                 {
                     email_info_t email;
@@ -148,5 +150,49 @@ namespace tiny_email
             }
         }
         return false;
+    }
+
+    bool CSqliteDataBase::AddUser(std::string strUserName, std::string strPassword)
+    {
+        bool bResult = false;
+        if (g_db)
+        {
+            try
+            {
+                std::string strInsertUser = "INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(?,?)";
+                SQLite::Statement query(*g_db, strInsertUser);
+                query.bind(1, strUserName);
+                query.bind(2, strPassword);
+                query.exec();
+                bResult = true;
+            }
+            catch (std::exception &ec)
+            {
+                bResult = false;
+            }
+        }
+        InitUserArrayFromDB();
+        return bResult;
+    }
+    bool CSqliteDataBase::RemoveUser(std::string strUserName)
+    {
+        bool bResult = false;
+        if (g_db)
+        {
+            try
+            {
+                std::string strDeleteUser = "DELETE FROM T_USER WHERE USER_NAME=?";
+                SQLite::Statement query(*g_db, strDeleteUser);
+                query.bind(1, strUserName);
+                query.exec();
+                bResult = true;
+            }
+            catch (std::exception &ec)
+            {
+                bResult = false;
+            }
+        }
+        InitUserArrayFromDB();
+        return bResult;
     }
 }
