@@ -24,7 +24,6 @@ namespace tiny_email
                     std::string strCreateSendEmailTable("CREATE TABLE T_EMAIL_SEND(ID INTEGER PRIMARY KEY AUTOINCREMENT,SENDER TEXT,RECEIVER TEXT,SUBJECT TEXT,CONTENT TEXT,TIME TEXT);");
                     g_db->exec(strCreateSendEmailTable);
                     tr.commit();
-                    InitDemoData();
                 }
                 catch (std::exception &ec2)
                 {
@@ -36,13 +35,13 @@ namespace tiny_email
         InitUserArrayFromDB();
     }
 
-    void CSqliteDataBase::InitDemoData()
+    /*void CSqliteDataBase::InitDemoData()
     {
         SQLite::Transaction tr(*g_db);
-        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test1@test.com\", \"test1_pass\");");
-        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test2@test.com\", \"test2_pass\");");
+        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test1\", \"test1_pass\");");
+        g_db->exec("INSERT INTO T_USER(USER_NAME,PASS_WORD) VALUES(\"test2\", \"test2_pass\");");
         tr.commit();
-    }
+    }*/
     void CSqliteDataBase::InitUserArrayFromDB()
     {
         m_userArray.clear();
@@ -137,8 +136,8 @@ namespace tiny_email
                 while (query.executeStep())
                 {
                     email_info_t email;
-                    email.emailSender_.name_ = query.getColumn(0).getString();
-                    email.emailReceiver_.name_ = query.getColumn(1).getString();
+                    email.emailSender_.emailAddr_ = query.getColumn(0).getString();
+                    email.emailReceiver_.emailAddr_ = query.getColumn(1).getString();
                     email.subject_ = query.getColumn(2).getString();
                     email.context_ = query.getColumn(3).getString();
                     emailArray.push_back(email);

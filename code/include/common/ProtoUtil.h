@@ -14,6 +14,7 @@ namespace tiny_email
         static std::string Base64Decode(const std::string strInput);
         static bool ParseFromToString(const std::string strInput,std::string& name,std::string& emailAddr);
         static std::string CreateUserAddrFromNameAndDomain(const std::string strName,const std::string strDomain);
+        static std::string CreateUserNameFromAddrAndDomain(const std::string strAddr,const std::string strDomain);
         static std::string Trim(const std::string &s);
         static std::time_t Now();
         static std::string TimeToString(const std::time_t t); 

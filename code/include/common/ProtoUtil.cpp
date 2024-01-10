@@ -190,6 +190,15 @@ namespace tiny_email
     return "";
   }
 
+  std::string CProtoUtil::CreateUserNameFromAddrAndDomain(const std::string strAddr,const std::string strDomain)
+  {
+    auto index = strAddr.find("@");
+    if (index != std::string::npos)
+    {
+       return Trim(strAddr.substr(0,index));
+    }
+    return "";
+  }
   std::time_t CProtoUtil::Now()
   {
     return time(nullptr);

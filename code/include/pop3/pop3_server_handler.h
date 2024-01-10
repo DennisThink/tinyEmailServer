@@ -28,6 +28,7 @@ namespace tiny_email
         std::string GetPassWordOkSend();
 
         POP3_SERVER_STEP_t m_step;
+        std::string m_strUserAddr;
         std::string m_strUserName;
         std::string m_strPassword;
         bool m_bAuthFinish;

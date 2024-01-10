@@ -14,6 +14,12 @@ namespace tiny_email
         m_strResponse = GetNextStepCmd(m_step);
         m_step = Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST;
         m_db = dbPtr;
+        //Test Data begin
+        {
+            m_db->AddUser("test1@test.com","test1_pass");
+            m_db->AddUser("test2@test.com","test2_pass");
+        }
+        //Test Data end
         m_bFinished = false;
     }
 
@@ -178,7 +184,7 @@ namespace tiny_email
         {
             if(strReq.find("AUTH CRAM-MD5") != std::string::npos)
             {
-                m_strResponse="NOT Supportr\n";
+                m_strResponse="NOT Support\n";
                 m_step = Smtp_Server_Step_t::SMTP_END;
                 return false;
             }
@@ -199,14 +205,15 @@ namespace tiny_email
         m_strPassword = CProtoUtil::Base64Decode(strReq);
         if(m_db)
         {
-            if(m_db->IsPasswordRight(m_strUserName,m_strPassword))
+            m_strUserAddr = tiny_email::CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strEmailDomain);
+            if(m_db->IsPasswordRight(m_strUserAddr,m_strPassword))
             {
-                LOG_INFO(g_log,"User {} verify Passed",m_strUserName);
+                LOG_INFO(g_log,"User {} verify Passed",m_strUserAddr);
                 m_strResponse = "235 Authentication successful\r\n";
             }
             else
             {
-                LOG_ERROR(g_log,"UserName or password not right {}",__LINE__);
+                LOG_ERROR(g_log,"UserName or password not right UserReq:{} {} {}",m_strUserAddr,m_strPassword,__LINE__);
                 m_strResponse = "";
                 m_step = Smtp_Server_Step_t::SMTP_END;
             }

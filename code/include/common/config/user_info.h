@@ -78,6 +78,14 @@ namespace tiny_email
             }
             return false;
         }
+
+        std::string toString() const{
+            std::string strRsp =  "FROM: "+this->emailSender_.emailAddr_+"\r\n";
+            strRsp += "TO: "+this->emailReceiver_.emailAddr_+"\r\n";
+            strRsp += "Subject: "+this->subject_+"\r\n";
+            strRsp += "Context: "+this->context_+"\r\n";
+            return strRsp;
+        }
     };
     bool ParseEmailForSmtp(const std::string& strContext,email_info_t& email);
     bool ParseEmailFromRecv(const std::string& strContext,email_info_t& email);

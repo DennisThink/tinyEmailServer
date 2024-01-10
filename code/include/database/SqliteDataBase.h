@@ -17,7 +17,7 @@ namespace tiny_email
         virtual ~CSqliteDataBase()=default;
     private:
         void InitUserArrayFromDB();
-        void InitDemoData();
+        //void InitDemoData();
         std::vector<user_info> m_userArray;
         EmailInfoArray_t m_sendMails;
         EmailInfoArray_t m_recvMails;

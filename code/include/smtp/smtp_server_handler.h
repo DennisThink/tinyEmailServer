@@ -20,6 +20,7 @@ namespace tiny_email
         std::string GetNextStepCmd(const Smtp_Server_Step_t& step);
         Smtp_Server_Step_t m_step;
         std::string m_strUserName;
+        std::string m_strUserAddr;
         std::string m_strPassword;
         bool m_bAuthFinish;
         std::string m_strEmailDomain;

@@ -86,7 +86,7 @@ namespace tiny_email
         if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
         {
             std::size_t nIndex = std::atoll(cmd.GetMessage().c_str());
-            if(nIndex > m_emailArray.size())
+            if(nIndex >= m_emailArray.size())
             {
                 nIndex = m_emailArray.size()-1;
             }
@@ -108,8 +108,13 @@ namespace tiny_email
     {
         if (m_db)
         {
+            LOG_INFO(g_log,"Pop3 Handle User:  {}",m_strUserAddr);
             m_emailArray.clear();
-            m_db->GetRecvMailInfo(m_strUserName, m_emailArray);
+            m_db->GetRecvMailInfo(m_strUserAddr, m_emailArray);
+        }
+        else
+        {
+            LOG_ERROR(g_log,"Pop3 Handle User:  {}",m_strUserAddr);
         }
         if (!m_emailArray.empty())
         {
@@ -118,8 +123,13 @@ namespace tiny_email
             for(std::size_t i = 1; i <= count ; i++)
             {
                 m_strResponse+=std::to_string(i)+" 102\r\n";
+                LOG_INFO(g_log,"Pop3 Handle User:  {} Time:{}",m_strUserAddr,m_emailArray[i-1].toString());
             }
             m_strResponse+=".\r\n";
+        }
+        else
+        {
+            LOG_ERROR(g_log,"Pop3 Handle User:  {} No Email",m_strUserAddr);
         }
         return true;
     }
@@ -221,8 +231,11 @@ STLS
         if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK;
-            m_strUserName = CProtoUtil::CreateUserAddrFromNameAndDomain(CProtoUtil::Trim(cmd.GetMessage()),m_strEmailDomain);
-            LOG_INFO(g_log,"User: {} is login on Pop3",m_strUserName);
+            //m_strUserName = CProtoUtil::CreateUserAddrFromNameAndDomain(CProtoUtil::Trim(cmd.GetMessage()),m_strEmailDomain);
+            m_strUserName = CProtoUtil::Trim(cmd.GetMessage());
+            LOG_INFO(g_log,"User {} {}",m_strUserName,m_strEmailDomain);
+            m_strUserAddr = CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strEmailDomain);
+            LOG_INFO(g_log,"User: {} is login on Pop3 {}",m_strUserName,m_strUserAddr);
             return true;
         }
         else
@@ -241,15 +254,15 @@ STLS
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK;
 
             m_strPassword = CProtoUtil::Trim(cmd.GetMessage());
-            LOG_INFO(g_log,"USER:{} Pass:{} ",m_strUserName,m_strPassword);
-            if (m_db && m_db->IsPasswordRight(m_strUserName, m_strPassword))
+            LOG_INFO(g_log,"USER:{} Pass:{} ",m_strUserAddr,m_strPassword);
+            if (m_db && m_db->IsPasswordRight(m_strUserAddr, m_strPassword))
             {
-                LOG_INFO(g_log,"User: {} Verify Succeed",m_strUserName);
+                LOG_INFO(g_log,"User: {} Verify Succeed",m_strUserAddr);
                 return true;
             }
             else
             {
-                LOG_ERROR(g_log,"User: {} Verify Failed",m_strUserName);
+                LOG_ERROR(g_log,"User: {} Verify Failed",m_strUserAddr);
                 return false;
             }
         }
@@ -295,7 +308,8 @@ STLS
             break;
             case POP3_CMD_t::POP3_CMD_RETR:
             {
-                m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_RETR_OK;
+                return OnRetr(cmd.GetMessage());
+                //m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_RETR_OK;
             }
             break;
             case POP3_CMD_t::POP3_CMD_NOOP:
