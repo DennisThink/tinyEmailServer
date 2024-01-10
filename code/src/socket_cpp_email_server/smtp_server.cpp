@@ -6,20 +6,18 @@
 #include "LogUtil.h"
 auto logFunc = [](const std::string strRsp) {};
 static auto g_log = GetLogger();
-void StartSmtpServer()
+void StartSmtpServer(const tiny_email::email_server_config& serverCfg)
 {
-    std::string strPort = "2125";
-    CTCPServer server(logFunc, strPort);
+    CTCPServer server(logFunc, std::to_string(serverCfg.m_smtpServer.port_));
     ASocket::Socket client;
     char buff[128] = {0};
     int recvLen = 0;
-    auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>("sock_cpp_email.db");
+    auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>(serverCfg.m_strDataBaseName);
     while (true)
     {
         if (server.Listen(client, 1000))
         {
-            std::string strDomain =  "smtp.test.com";   
-            tiny_email::CSmtpServerHandler handler(dbPtr,strDomain);
+            tiny_email::CSmtpServerHandler handler(dbPtr,serverCfg.m_strDomain);
 
             while (true)
             {

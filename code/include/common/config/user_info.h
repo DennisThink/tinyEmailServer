@@ -25,6 +25,13 @@ namespace tiny_email
         
     };
 
+    struct email_server_config
+    {
+        std::string m_strDomain;
+        std::string m_strDataBaseName;
+        server_config m_smtpServer;
+        server_config m_pop3Server;
+    };
     struct senderReceiverInfo
     {
         std::string name_;
