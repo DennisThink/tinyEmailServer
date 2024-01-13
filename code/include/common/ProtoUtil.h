@@ -8,6 +8,9 @@ namespace tiny_email
     class CProtoUtil final
     {
     public:
+        static std::string GetSmtpDomainFromMainDomain(const std::string strMainDomain);
+        static std::string GetPop3DomainFromMainDomain(const std::string strMainDomain);
+        static std::string GetImapDomainFromMainDomain(const std::string strMainDomain);
         static std::vector<std::string> SplitStringByLine(const std::string& strValue);
         static bool SplitLine(const std::string& strInput,int& code,std::string& value,bool& bFinish);
         static std::string Base64Encode(const std::string strInput);

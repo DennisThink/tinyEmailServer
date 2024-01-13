@@ -4,6 +4,7 @@
 #include "Socket.h"
 #include "SqliteDataBase.h"
 #include "LogUtil.h"
+#include "ProtoUtil.h"
 auto logFunc2 = [](const std::string strRsp) {};
 static auto g_log = GetLogger();
 void StartPop3Server(const tiny_email::email_server_config& serverCfg)
@@ -17,7 +18,7 @@ void StartPop3Server(const tiny_email::email_server_config& serverCfg)
         if (server.Listen(client, 1000))
         {
             auto dbPtr = std::make_shared<tiny_email::CSqliteDataBase>(serverCfg.m_strDataBaseName);
-            tiny_email::CPop3ServerHandler handler(dbPtr,serverCfg.m_strDomain);
+            tiny_email::CPop3ServerHandler handler(dbPtr,tiny_email::CProtoUtil::GetPop3DomainFromMainDomain(serverCfg.m_strDomain));
 
             while (true)
             {

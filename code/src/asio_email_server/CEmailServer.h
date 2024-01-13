@@ -4,6 +4,7 @@
 #include "thirdLib.h"
 #include "CTcpServer.h"
 #include "CMemDataBase.h"
+#include "user_info.h"
 namespace tiny_email 
 {
     class CEmailServer 
@@ -13,7 +14,7 @@ namespace tiny_email
         {
         }
 
-        void Start();
+        void Start(const email_server_config& serverCfg);
     private:
         asio::io_context m_ioService;
         CSmtpServer_SHARED_PTR m_smtpHandler;

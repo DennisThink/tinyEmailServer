@@ -6,6 +6,46 @@
 #include <locale>
 namespace tiny_email
 {
+  std::string CProtoUtil::GetSmtpDomainFromMainDomain(const std::string strMainDomain)
+  {
+    std::string strDomainName;
+    {
+      auto index = strMainDomain.find(".");
+      if (index != std::string::npos)
+      {
+        auto len = strMainDomain.length();
+        strDomainName = "smtp" + strMainDomain.substr(index, len - index);
+      }
+      return strDomainName;
+    }
+  }
+  std::string CProtoUtil::GetPop3DomainFromMainDomain(const std::string strMainDomain)
+  {
+    std::string strDomainName;
+    {
+      auto index = strMainDomain.find(".");
+      if (index != std::string::npos)
+      {
+        auto len = strMainDomain.length();
+        strDomainName = "pop" + strMainDomain.substr(index, len - index);
+      }
+      return strDomainName;
+    }
+  }
+  std::string CProtoUtil::GetImapDomainFromMainDomain(const std::string strMainDomain)
+  {
+    std::string strDomainName;
+    {
+      auto index = strMainDomain.find(".");
+      if (index != std::string::npos)
+      {
+        auto len = strMainDomain.length();
+        strDomainName = "imap" + strMainDomain.substr(index, len - index);
+      }
+      return strDomainName;
+    }
+  }
+
   // Copy from QT
   std::vector<std::string> CProtoUtil::SplitStringByLine(const std::string &strValue)
   {
@@ -36,7 +76,7 @@ namespace tiny_email
     std::size_t nStartPos = 0;
     for (nStartPos = 0; nStartPos < nCount; nStartPos++)
     {
-      if ((s[nStartPos] != ' ')&&
+      if ((s[nStartPos] != ' ') &&
           (s[nStartPos] != '\r') &&
           (s[nStartPos] != '\n'))
       {
@@ -47,14 +87,14 @@ namespace tiny_email
     std::size_t nStopPos = nCount - 1;
     for (nStopPos = nCount - 1; nStopPos > 0; nStopPos--)
     {
-      if ((s[nStopPos] != ' ')&&
+      if ((s[nStopPos] != ' ') &&
           (s[nStopPos] != '\r') &&
           (s[nStopPos] != '\n'))
       {
         break;
       }
     }
-    return strValue.substr(nStartPos,nStopPos-nStartPos+1);
+    return strValue.substr(nStartPos, nStopPos - nStartPos + 1);
   }
 
   bool CProtoUtil::SplitLine(const std::string &strInput, int &code, std::string &value, bool &bFinish)
@@ -190,12 +230,12 @@ namespace tiny_email
     return "";
   }
 
-  std::string CProtoUtil::CreateUserNameFromAddrAndDomain(const std::string strAddr,const std::string strDomain)
+  std::string CProtoUtil::CreateUserNameFromAddrAndDomain(const std::string strAddr, const std::string strDomain)
   {
     auto index = strAddr.find("@");
     if (index != std::string::npos)
     {
-       return Trim(strAddr.substr(0,index));
+      return Trim(strAddr.substr(0, index));
     }
     return "";
   }
@@ -206,7 +246,7 @@ namespace tiny_email
 
   std::string CProtoUtil::TimeToString(const std::time_t t)
   {
-    char timeString[std::size("yyyy-mm-ddThh:mm:ssZ")]={0};
+    char timeString[std::size("yyyy-mm-ddThh:mm:ssZ")] = {0};
     std::strftime(std::data(timeString), std::size(timeString),
                   "%FT%TZ", std::gmtime(&t));
     return timeString;

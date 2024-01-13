@@ -14,12 +14,6 @@ namespace tiny_email
         m_strResponse = GetNextStepCmd(m_step);
         m_step = Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST;
         m_db = dbPtr;
-        //Test Data begin
-        {
-            m_db->AddUser("test1@test.com","test1_pass");
-            m_db->AddUser("test2@test.com","test2_pass");
-        }
-        //Test Data end
         m_bFinished = false;
     }
 
@@ -86,7 +80,8 @@ namespace tiny_email
         }
         if (step == Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST)
         {
-            std::string strFirst = "250-mail\r\n";
+
+            std::string strFirst = "250 OK\r\n";
             std::string strAuth1 = "250-AUTH LOGIN PLAIN\r\n";
             std::string strAuth2 = "250-AUTH=LOGIN PLAIN\r\n";
             std::string str8BitTime = "250 8BITMIME\r\n";
