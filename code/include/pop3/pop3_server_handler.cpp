@@ -85,7 +85,7 @@ namespace tiny_email
         PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strRecv, cmd);
         if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
         {
-            std::size_t nIndex = std::atoll(cmd.GetMessage().c_str());
+            std::size_t nIndex = std::atoll(cmd.GetMsg().c_str());
             if(nIndex >= m_emailArray.size())
             {
                 nIndex = m_emailArray.size()-1;
@@ -232,7 +232,7 @@ STLS
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK;
             //m_strUserName = CProtoUtil::CreateUserAddrFromNameAndDomain(CProtoUtil::Trim(cmd.GetMessage()),m_strEmailDomain);
-            m_strUserName = CProtoUtil::Trim(cmd.GetMessage());
+            m_strUserName = CProtoUtil::Trim(cmd.GetMsg());
             LOG_INFO(g_log,"User {} {}",m_strUserName,m_strEmailDomain);
             m_strUserAddr = CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strEmailDomain);
             LOG_INFO(g_log,"User: {} is login on Pop3 {}",m_strUserName,m_strUserAddr);
@@ -253,7 +253,7 @@ STLS
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK;
 
-            m_strPassword = CProtoUtil::Trim(cmd.GetMessage());
+            m_strPassword = CProtoUtil::Trim(cmd.GetMsg());
             LOG_INFO(g_log,"USER:{} Pass:{} ",m_strUserAddr,m_strPassword);
             if (m_db && m_db->IsPasswordRight(m_strUserAddr, m_strPassword))
             {
@@ -288,12 +288,12 @@ STLS
             {
             case POP3_CMD_t::POP3_CMD_USER_NAME:
             {
-                return OnUser(cmd.GetMessage());
+                return OnUser(cmd.GetMsg());
             }
             break;
             case POP3_CMD_t::POP3_CMD_PASS_WORD:
             {
-                return OnPassword(cmd.GetMessage());
+                return OnPassword(cmd.GetMsg());
             }
             break;
             case POP3_CMD_t::POP3_CMD_STAT:
@@ -308,7 +308,7 @@ STLS
             break;
             case POP3_CMD_t::POP3_CMD_RETR:
             {
-                return OnRetr(cmd.GetMessage());
+                return OnRetr(cmd.GetMsg());
                 //m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_RETR_OK;
             }
             break;

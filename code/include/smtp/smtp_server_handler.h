@@ -13,7 +13,7 @@ namespace tiny_email
         bool OnClientReq(const std::string strValue);
         bool IsFinished();
         std::string GetResponse();
-        std::string GetUserName();
+        std::string UserName();
         std::string GetPassowrd();
         virtual ~CSmtpServerHandler();
     private:

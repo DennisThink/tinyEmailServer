@@ -5,7 +5,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+#ifndef WINDOWS
 #include <unistd.h>
+#endif
 namespace tiny_email
 {
     class LogBase

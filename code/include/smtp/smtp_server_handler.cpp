@@ -125,7 +125,7 @@ namespace tiny_email
         m_strResponse.clear();
         return strRsp;
     }
-    std::string CSmtpServerHandler::GetUserName()
+    std::string CSmtpServerHandler::UserName()
     {
         return "";
     }

@@ -32,6 +32,6 @@ TEST_CASE("proto util test") {
         tiny_email::CPop3ProtoReqCmd cmd;
         auto result = tiny_email::CPop3ProtoReqCmd::FromString(strUserCmd, cmd);
         CHECK_EQ(tiny_email::PARSE_POP3_RESULT::PARSE_POP3_SUCCEED,result);
-        CHECK_EQ("test2",cmd.GetMessage());
+        CHECK_EQ("test2",cmd.GetMsg());
     }
 }

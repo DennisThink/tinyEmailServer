@@ -50,7 +50,7 @@ namespace tiny_email
             return m_code;
         }
 
-        std::string GetMessage() const 
+        std::string GetMsg() const 
         {
             return m_message;
         }
