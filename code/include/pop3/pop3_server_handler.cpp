@@ -262,11 +262,11 @@ STLS
             std::size_t count = m_emailArray.size();
             std::size_t nSumSize = 0;
             std::string strDetail;
-            for (std::size_t i = 1; i <= count; i++)
+            for (std::size_t i = 0; i < count; i++)
             {
                 nSumSize+= m_emailArray[i].emailBytes_;
-                strDetail += std::to_string(i) + std::to_string(m_emailArray[i].emailBytes_)+ "\r\n";
-                LOG_INFO(g_log, "Pop3 Handle User:  {} Time:{}", m_strUserAddr, m_emailArray[i - 1].toString());
+                strDetail += std::to_string(i+1) + std::to_string(m_emailArray[i].emailBytes_)+ "\r\n";
+                LOG_INFO(g_log, "Pop3 Handle User:  {} Time:{}", m_strUserAddr, m_emailArray[i].toString());
             }
             m_strEmailListDetail = "+OK " + std::to_string(count) + " \r\n";
             m_strEmailStateSummary = m_strEmailListDetail;
