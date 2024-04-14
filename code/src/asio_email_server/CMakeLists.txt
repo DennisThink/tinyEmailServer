@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.5)
 project(emailServer)
 set(CMAKE_CXX_STANDARD 20)
 SET(INC_BASE ../../include)
@@ -17,6 +17,7 @@ include_directories(${INC_BASE}/proto/code/)
 include_directories(${INC_BASE}/proto/smtp/)
 include_directories(${INC_BASE}/proto/pop3/)
 include_directories(${INC_BASE}/proto/imap/)
+include_directories(${INC_BASE}/log/)
 include_directories(.)
 include_directories(./network/)
 include_directories(./network/tcpClient/)
@@ -34,10 +35,14 @@ SET(EMAIL_SERVER CEmailServer.h CEmailServer.cpp
                  ./handler/CSmtpServerHandler.cpp
                  ./handler/CPop3ServerHandler.h  
                  ./handler/CPop3ServerHandler.cpp
+                 ${INC_BASE}/smtp/smtp_server_handler.cpp 
+                 ${INC_BASE}/pop3/pop3_server_handler.cpp
+                 ${INC_BASE}/pop3/CPop3ProtoCmd.cpp
                  ./network/tcpClient/CTcpClient.h
                  ./network/tcpClient/CTcpClient.cpp
                  ${INC_BASE}/common/ProtoUtil.cpp
                  ${INC_BASE}/common/config/user_info.cpp
+                 ${INC_BASE}/log/LogUtil.cpp
                  # DataBase
                  ${INC_BASE}/database/SqliteDataBase.cpp
                  )

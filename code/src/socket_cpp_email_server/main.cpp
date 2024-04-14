@@ -7,8 +7,8 @@ int main(int argc,char * argv[])
     tiny_email::email_server_config emailCfg;
     emailCfg.m_strDomain = "email.test.com";
     emailCfg.m_strDataBaseName = "socket_email_server.db";
-    emailCfg.m_smtpServer.port_=25;
-    emailCfg.m_pop3Server.port_=110;
+    emailCfg.m_smtpServer.port_=3025;
+    emailCfg.m_pop3Server.port_=3110;
     if(argc > 1)
     {
         if(strcmp(argv[1],"smtp")==0)

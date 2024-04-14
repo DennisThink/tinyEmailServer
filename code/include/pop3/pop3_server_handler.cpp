@@ -1,5 +1,4 @@
 #include "pop3_server_handler.h"
-#include "CProtoCmd.h"
 #include "CPop3ProtoCmd.h"
 #include "ProtoUtil.h"
 #include "SqliteDataBase.h"

@@ -27,11 +27,8 @@ void StartSmtpServer(const tiny_email::email_server_config &serverCfg)
             }
         }
         //Test Data end
-    while (true)
-    {
-        if (server.Listen(client, 1000))
+        if (server.Listen(client,-1))
         {
-
             tiny_email::CSmtpServerHandler handler(dbPtr,tiny_email::CProtoUtil::GetSmtpDomainFromMainDomain(serverCfg.m_strDomain));
 
             while (true)
@@ -76,5 +73,4 @@ void StartSmtpServer(const tiny_email::email_server_config &serverCfg)
             }
             server.Disconnect(client);
         }
-    }
 }

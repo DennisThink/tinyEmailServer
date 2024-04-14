@@ -4,7 +4,7 @@
 #include "CProtoCode.h"
 #include "DataBaseInterface.h"
 #include <string>
-#include "LogBase.h"
+#include "Log.h"
 namespace tiny_email
 {
     class CPop3ServerHandler

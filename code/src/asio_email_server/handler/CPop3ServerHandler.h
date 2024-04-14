@@ -4,6 +4,7 @@
 #include "CTcpClient.h"
 #include "thirdLib.h"
 #include "DataBaseInterface.h"
+#include "../../include/pop3/pop3_server_handler.h"
 namespace tiny_email
 {
     class CPop3Handler:public INetWorkHandler
@@ -22,7 +23,7 @@ namespace tiny_email
            m_client = tcpSock;
            if(m_client->isConnected())
            {
-                //m_client->Send(m_proto.GetSend());
+               m_client->Send(m_proto->GetResponse());
            }
        }
        void Start()
@@ -30,6 +31,7 @@ namespace tiny_email
            m_client->Start();
        }
     private:
+       std::shared_ptr<CPop3ServerHandler> m_proto;
        CTcpClient_ptr_t m_client;
        log_ptr_t m_log;
     };
