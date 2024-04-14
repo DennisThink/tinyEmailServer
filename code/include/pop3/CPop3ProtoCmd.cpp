@@ -31,18 +31,7 @@ namespace tiny_email
             std::string strPrefix = strValue.substr(0, posSpace);
             std::transform(strPrefix.begin(), strPrefix.end(), strPrefix.begin(), ::toupper);
             std::string strMessage = strValue.substr(posSpace, strValue.length() - posSpace);
-            std::cout << "Msg   " << strMessage << std::endl;
             strMessage = CProtoUtil::Trim(strMessage);
-            std::cout << "Msg   " << strMessage << std::endl;
-            /*const std::string strPop3SendUser="USER dennismi\r\n";
-            const std::string strPop3SendPasswd="PASS srpPr9MXwp285Su\r\n";
-            const std::string strPop3SendStat ="STAT\r\n";
-            const std::string strPop3SendUidl ="UIDL 1\r\n";
-            const std::string strPop3SendRetr ="RETR 1\r\n";
-            const std::string strPop3SendNoop ="NOOP\r\n";
-            const std::string strPop3SendDel  ="DELE 1\r\n";
-            const std::string strPop3SendList ="LIST\r\n";
-            const std::string strPop3SendQuit ="QUIT\r\n";*/
             if (strPrefix == "USER")
             {
                 cmd = CPop3ProtoReqCmd(POP3_CMD_t::POP3_CMD_USER_NAME, strMessage);
@@ -81,11 +70,6 @@ namespace tiny_email
         }
         std::string strPrefix = strValue;
         std::transform(strPrefix.begin(), strPrefix.end(), strPrefix.begin(), ::toupper);
-
-        /*const std::string strPop3SendStat ="STAT\r\n";
-        const std::string strPop3SendNoop ="NOOP\r\n";
-        const std::string strPop3SendList ="LIST\r\n";
-        const std::string strPop3SendQuit ="QUIT\r\n";*/
         if (strPrefix == "STAT\r\n")
         {
             cmd = CPop3ProtoReqCmd(POP3_CMD_t::POP3_CMD_STAT, "");

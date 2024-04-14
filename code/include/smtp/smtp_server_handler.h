@@ -6,16 +6,16 @@
 #include <string>
 namespace tiny_email
 {
-    class CSmtpServerHandler
+    class CSmtpServerProtoHandler
     {
     public:
-        CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);
+        CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);
         bool OnClientReq(const std::string strValue);
         bool IsFinished();
         std::string GetResponse();
         std::string UserName();
         std::string GetPassowrd();
-        virtual ~CSmtpServerHandler();
+        virtual ~CSmtpServerProtoHandler();
     private:
         std::string GetNextStepCmd(const Smtp_Server_Step_t& step);
         Smtp_Server_Step_t m_step;

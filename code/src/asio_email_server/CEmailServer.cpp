@@ -20,10 +20,10 @@ namespace tiny_email
             }
         }
         log_ptr_t g_console = spdlog::stdout_color_mt("email_server");
-        m_smtpHandler = std::make_shared<CSmtpServer>(m_ioService,g_console,"127.0.0.1",serverCfg.m_smtpServer.port_,m_dataPtr);
+        m_smtpHandler = std::make_shared<CSmtpServer>(m_ioService,"127.0.0.1",serverCfg.m_smtpServer.port_,m_dataPtr,serverCfg.m_strDomain);
         m_smtpHandler->Start();
 
-        m_pop3Handler = std::make_shared<CPop3Server>(m_ioService,g_console,"127.0.0.1",serverCfg.m_pop3Server.port_,m_dataPtr);
+        m_pop3Handler = std::make_shared<CPop3Server>(m_ioService,"127.0.0.1",serverCfg.m_pop3Server.port_,m_dataPtr,serverCfg.m_strDomain);
         m_pop3Handler->Start();
 
         //m_imapHandler = std::make_shared<CImapServer>(m_ioService,g_console,"127.0.0.1",2143,m_dataPtr);

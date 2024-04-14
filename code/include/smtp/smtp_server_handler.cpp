@@ -7,7 +7,7 @@
 namespace tiny_email
 {
     static auto g_log = GetLogger();
-    CSmtpServerHandler::CSmtpServerHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName)
+    CSmtpServerProtoHandler::CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName)
     {
         m_strEmailDomain = strDomainName;
         m_step = Smtp_Server_Step_t::SMTP_ON_CONNECT;
@@ -17,12 +17,12 @@ namespace tiny_email
         m_bFinished = false;
     }
 
-    bool CSmtpServerHandler::IsFinished()
+    bool CSmtpServerProtoHandler::IsFinished()
     {
         return m_bFinished;
     }
 
-    bool (CSmtpServerHandler::*pFunc)(const std::string strReq);
+    bool (CSmtpServerProtoHandler::*pFunc)(const std::string strReq);
     struct SmtpServerStepElem
     {
         Smtp_Server_Step_t curStep;
@@ -30,22 +30,22 @@ namespace tiny_email
         decltype(pFunc)  callback_func;
     };
  
-    bool CSmtpServerHandler::OnClientReq(const std::string strValue)
+    bool CSmtpServerProtoHandler::OnClientReq(const std::string strValue)
     {
         //或许直接指定下一步的状态不是一个好的选择，此处考虑优化
         static struct SmtpServerStepElem stepArray[] =
         {
-            {Smtp_Server_Step_t::SMTP_BEGIN, Smtp_Server_Step_t::SMTP_ON_CONNECT,&CSmtpServerHandler::OnEhloReq},
-            {Smtp_Server_Step_t::SMTP_ON_CONNECT, Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST,&CSmtpServerHandler::OnEhloReq},
-            {Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST, Smtp_Server_Step_t::SMTP_RECV_AUTH_LOGIN_REQ,&CSmtpServerHandler::OnEhloReq},
-            {Smtp_Server_Step_t::SMTP_RECV_AUTH_LOGIN_REQ, Smtp_Server_Step_t::SMTP_RECV_PASS_WORD_REQ,&CSmtpServerHandler::OnAuthLoginReq},
-            {Smtp_Server_Step_t::SMTP_RECV_PASS_WORD_REQ, Smtp_Server_Step_t::SMTP_NAME_PASS_VERIFY,&CSmtpServerHandler::OnPasswordReq},
-            {Smtp_Server_Step_t::SMTP_NAME_PASS_VERIFY, Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ,&CSmtpServerHandler::OnNamePassVerifyReq},
-            {Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ, Smtp_Server_Step_t::SMTP_RECV_RCPT_TO_REQ,&CSmtpServerHandler::OnMailFromReq},
-            {Smtp_Server_Step_t::SMTP_RECV_RCPT_TO_REQ, Smtp_Server_Step_t::SMTP_RECV_DATA_REQ,&CSmtpServerHandler::OnRcptToReq},
-            {Smtp_Server_Step_t::SMTP_RECV_DATA_REQ, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerHandler::OnDataReq},
-            {Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerHandler::OnData},
-            {Smtp_Server_Step_t::SMTP_END,Smtp_Server_Step_t::SMTP_END,&CSmtpServerHandler::OnClientReq},
+            {Smtp_Server_Step_t::SMTP_BEGIN, Smtp_Server_Step_t::SMTP_ON_CONNECT,&CSmtpServerProtoHandler::OnEhloReq},
+            {Smtp_Server_Step_t::SMTP_ON_CONNECT, Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST,&CSmtpServerProtoHandler::OnEhloReq},
+            {Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST, Smtp_Server_Step_t::SMTP_RECV_AUTH_LOGIN_REQ,&CSmtpServerProtoHandler::OnEhloReq},
+            {Smtp_Server_Step_t::SMTP_RECV_AUTH_LOGIN_REQ, Smtp_Server_Step_t::SMTP_RECV_PASS_WORD_REQ,&CSmtpServerProtoHandler::OnAuthLoginReq},
+            {Smtp_Server_Step_t::SMTP_RECV_PASS_WORD_REQ, Smtp_Server_Step_t::SMTP_NAME_PASS_VERIFY,&CSmtpServerProtoHandler::OnPasswordReq},
+            {Smtp_Server_Step_t::SMTP_NAME_PASS_VERIFY, Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ,&CSmtpServerProtoHandler::OnNamePassVerifyReq},
+            {Smtp_Server_Step_t::SMTP_RECV_MAIL_FROM_REQ, Smtp_Server_Step_t::SMTP_RECV_RCPT_TO_REQ,&CSmtpServerProtoHandler::OnMailFromReq},
+            {Smtp_Server_Step_t::SMTP_RECV_RCPT_TO_REQ, Smtp_Server_Step_t::SMTP_RECV_DATA_REQ,&CSmtpServerProtoHandler::OnRcptToReq},
+            {Smtp_Server_Step_t::SMTP_RECV_DATA_REQ, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerProtoHandler::OnDataReq},
+            {Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA, Smtp_Server_Step_t::SMTP_RECV_EMAIL_DATA,&CSmtpServerProtoHandler::OnData},
+            {Smtp_Server_Step_t::SMTP_END,Smtp_Server_Step_t::SMTP_END,&CSmtpServerProtoHandler::OnClientReq},
         };
 
         if (!strValue.empty())
@@ -70,7 +70,7 @@ namespace tiny_email
         }
         return false;
     }
-    std::string CSmtpServerHandler::GetNextStepCmd(const Smtp_Server_Step_t &step)
+    std::string CSmtpServerProtoHandler::GetNextStepCmd(const Smtp_Server_Step_t &step)
     {
         if (step == Smtp_Server_Step_t::SMTP_ON_CONNECT)
         {
@@ -119,27 +119,27 @@ namespace tiny_email
         }
         return "";
     }
-    std::string CSmtpServerHandler::GetResponse()
+    std::string CSmtpServerProtoHandler::GetResponse()
     {
         std::string strRsp = m_strResponse;
         m_strResponse.clear();
         return strRsp;
     }
-    std::string CSmtpServerHandler::UserName()
+    std::string CSmtpServerProtoHandler::UserName()
     {
         return "";
     }
-    std::string CSmtpServerHandler::GetPassowrd()
+    std::string CSmtpServerProtoHandler::GetPassowrd()
     {
         return "";
     }
-    CSmtpServerHandler::~CSmtpServerHandler()
+    CSmtpServerProtoHandler::~CSmtpServerProtoHandler()
     {
         std::cout<<"EMAIL Data:  "<<m_emailData<<std::endl;
     }
 
 
-    bool CSmtpServerHandler::OnEhloReq(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnEhloReq(const std::string strReq)
     {
         if(strReq.find("\r\n") != std::string::npos)
         {
@@ -157,7 +157,7 @@ namespace tiny_email
         }
         return false;
     }
-    bool CSmtpServerHandler::OnAuthLoginReq(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnAuthLoginReq(const std::string strReq)
     {
         if(strReq.find("\r\n") != std::string::npos)
         {
@@ -186,7 +186,7 @@ namespace tiny_email
         }
         return false;
     }
-    bool CSmtpServerHandler::OnPasswordReq(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnPasswordReq(const std::string strReq)
     {
         if(strReq.find("\r\n") != std::string::npos)
         {
@@ -195,7 +195,7 @@ namespace tiny_email
         }
         return false;
     }
-    bool CSmtpServerHandler::OnNamePassVerifyReq(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnNamePassVerifyReq(const std::string strReq)
     {
         m_strPassword = CProtoUtil::Base64Decode(strReq);
         if(m_db)
@@ -215,20 +215,20 @@ namespace tiny_email
         }
         return true;
     }
-    bool CSmtpServerHandler::OnMailFromReq(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnMailFromReq(const std::string strReq)
     {
         m_strResponse = "235 Authentication successful\r\n";
         return true;
     }
-    bool CSmtpServerHandler::OnRcptToReq(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnRcptToReq(const std::string strReq)
     {
         return true;
     }
-    bool CSmtpServerHandler::OnDataReq(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnDataReq(const std::string strReq)
     {
         return true;
     }
-    bool CSmtpServerHandler::OnData(const std::string strReq)
+    bool CSmtpServerProtoHandler::OnData(const std::string strReq)
     {
         m_emailData += strReq;
        

@@ -1,10 +1,9 @@
 #include "CSmtpServerHandler.h"
 namespace tiny_email
 {
-    CSmtpHandler::CSmtpHandler(log_ptr_t log, CDataBaseInterface_SHARED_PTR ptr)
+    CSmtpHandler::CSmtpHandler(CDataBaseInterface_SHARED_PTR ptr, const std::string strDomainName)
     {
-        this->m_log = log;
-        m_proto = std::make_shared<CSmtpServerHandler>(ptr, "email.test.com");
+        m_proto = std::make_shared<CSmtpServerProtoHandler>(ptr, strDomainName);
     }
     void CSmtpHandler::OnConnected()
     {

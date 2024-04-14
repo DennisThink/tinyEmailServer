@@ -10,7 +10,7 @@ namespace tiny_email
     class CSmtpHandler:public INetWorkHandler
     {
     public:
-       explicit CSmtpHandler(log_ptr_t log, CDataBaseInterface_SHARED_PTR ptr);
+       explicit CSmtpHandler(CDataBaseInterface_SHARED_PTR ptr,const std::string strDomainName);
        virtual ~CSmtpHandler()=default;
        virtual void OnConnected() override;
        virtual void OnSend() override;
@@ -31,9 +31,8 @@ namespace tiny_email
            m_client->Start();
        }
     private:
-       std::shared_ptr<CSmtpServerHandler> m_proto;
+       std::shared_ptr<CSmtpServerProtoHandler> m_proto;
        CTcpClient_ptr_t m_client;
-       log_ptr_t m_log;
     };
     using CSmtpHandler_PTR = std::shared_ptr<CSmtpHandler>;
 }

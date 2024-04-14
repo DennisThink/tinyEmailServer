@@ -8,24 +8,16 @@ namespace tiny_email
     {
     public:
         explicit CTcpClient(asio::io_context& service,
-                            const log_ptr_t log,
                             const INetWorkHandler_SHARED_PTR handler);
         explicit CTcpClient(asio::io_context& service,
                             asio::ip::tcp::socket sock,
-                            const log_ptr_t log,
                             const INetWorkHandler_SHARED_PTR handler):
                             m_ioService(service),
                             m_socket(std::move(sock)),
-                            m_log(log),
                             m_handler(handler)
                             {
                                
                                 m_bConnected = true;
-                                /*auto hand = handler.lock();
-                                if(hand)
-                                {
-                                    hand->HandleConnected();
-                                }*/
                             }
         void Start(){DoRead();};
         bool ConnectTo(const std::string& domainName,const std::string& protoType);
@@ -42,7 +34,6 @@ namespace tiny_email
         bool m_bShouldClose = false;
         asio::io_context& m_ioService;
         asio::ip::tcp::socket m_socket;
-        log_ptr_t m_log;
         INetWorkHandler_WEAK_PTR m_handler;
         char m_sendBuf[256];
         char m_recvBuf[256];

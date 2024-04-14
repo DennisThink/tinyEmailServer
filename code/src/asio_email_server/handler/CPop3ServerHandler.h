@@ -10,7 +10,7 @@ namespace tiny_email
     class CPop3Handler:public INetWorkHandler
     {
     public:
-       explicit CPop3Handler(log_ptr_t log,CDataBaseInterface_SHARED_PTR ptr):m_log(log){}
+        explicit CPop3Handler(CDataBaseInterface_SHARED_PTR ptr,const std::string strDomainName);
        virtual ~CPop3Handler()=default;
        virtual void OnConnected() override{}
        virtual void OnTimer() override{};
@@ -31,9 +31,8 @@ namespace tiny_email
            m_client->Start();
        }
     private:
-       std::shared_ptr<CPop3ServerHandler> m_proto;
+       std::shared_ptr<CPop3ServerProtoHandler> m_proto;
        CTcpClient_ptr_t m_client;
-       log_ptr_t m_log;
     };
     using CPop3Handler_SHARED_PTR = std::shared_ptr<CPop3Handler>;
 }

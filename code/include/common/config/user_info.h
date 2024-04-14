@@ -60,6 +60,10 @@ namespace tiny_email
         std::size_t emailBytes_;
         std::time_t emailTime_;
     public:
+        email_info_t()
+        {
+            emailTime_ = time(nullptr);
+        }
         bool IsReceiver(const std::string strUser) const
         {
             if(!copyReceivers_.empty())

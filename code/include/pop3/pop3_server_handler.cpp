@@ -7,7 +7,7 @@
 namespace tiny_email
 {
     static auto g_log = GetLogger();
-    CPop3ServerHandler::CPop3ServerHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName)
+    CPop3ServerProtoHandler::CPop3ServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName)
     {
         m_strEmailDomain = strDomainName;
         m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT;
@@ -16,7 +16,7 @@ namespace tiny_email
         //m_log=std::make_shared<LogConsole>();
     }
 
-    bool (CPop3ServerHandler::*pFunc3)(const std::string &strReq);
+    bool (CPop3ServerProtoHandler::*pFunc3)(const std::string &strReq);
     struct Pop3ServerStepElem
     {
         POP3_SERVER_STEP_t curStep_;
@@ -26,15 +26,15 @@ namespace tiny_email
     };
 
   
-    bool CPop3ServerHandler::OnClientReq(const std::string strValue)
+    bool CPop3ServerProtoHandler::OnClientReq(const std::string strValue)
     {
         static Pop3ServerStepElem stepArrayPop[] = {
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_CMD_t::POP3_CMD_USER_NAME, &CPop3ServerHandler::OnUser},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_PASS_WORD, &CPop3ServerHandler::OnPassword},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_STAT, &CPop3ServerHandler::OnState},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerHandler::OnRetr},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_LIST, &CPop3ServerHandler::OnList},
-        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_CMD_t::POP3_CMD_CAPA, &CPop3ServerHandler::OnCapa},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_CMD_t::POP3_CMD_USER_NAME, &CPop3ServerProtoHandler::OnUser},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_PASS_WORD, &CPop3ServerProtoHandler::OnPassword},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_STAT, &CPop3ServerProtoHandler::OnState},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerProtoHandler::OnRetr},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_LIST, &CPop3ServerProtoHandler::OnList},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_CMD_t::POP3_CMD_CAPA, &CPop3ServerProtoHandler::OnCapa},
         };
         CPop3ProtoReqCmd reqCmd;
         PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strValue, reqCmd);
@@ -57,27 +57,27 @@ namespace tiny_email
         return false;
     }
 
-    bool CPop3ServerHandler::OnNoOp(const std::string &strRecv)
+    bool CPop3ServerProtoHandler::OnNoOp(const std::string &strRecv)
     {
         return false;
     }
-    std::string CPop3ServerHandler::GetResponse()
+    std::string CPop3ServerProtoHandler::GetResponse()
     {
         std::string strRsp = m_strResponse;
         m_strResponse.clear();
         return strRsp;
     }
-    CPop3ServerHandler::~CPop3ServerHandler()
+    CPop3ServerProtoHandler::~CPop3ServerProtoHandler()
     {
         std::cout << "EMAIL Data:  " << m_emailData << std::endl;
     }
 
-    bool CPop3ServerHandler::OnState(const std::string &strRecv)
+    bool CPop3ServerProtoHandler::OnState(const std::string &strRecv)
     {
         m_strResponse = "+OK 1 102\r\n";
         return true;
     }
-    bool CPop3ServerHandler::OnRetr(const std::string &strRecv)
+    bool CPop3ServerProtoHandler::OnRetr(const std::string &strRecv)
     {
         LOG_INFO(g_log,"RETR:{} {}",strRecv,__LINE__);
         CPop3ProtoReqCmd cmd;
@@ -103,7 +103,7 @@ namespace tiny_email
         return true;
     }
 
-    bool CPop3ServerHandler::OnList(const std::string &strRecv)
+    bool CPop3ServerProtoHandler::OnList(const std::string &strRecv)
     {
         if (m_db)
         {
@@ -134,7 +134,7 @@ namespace tiny_email
     }
 
     //Todo: the ability should be modified,extend command, support later
-    bool CPop3ServerHandler::OnCapa(const std::string& strRecv)
+    bool CPop3ServerProtoHandler::OnCapa(const std::string& strRecv)
     {
         m_strResponse="-ERR\r\n";
         return true;
@@ -155,11 +155,11 @@ STLS
 )";
         return true;
     }
-    std::string CPop3ServerHandler::GetPassWordOkSend()
+    std::string CPop3ServerProtoHandler::GetPassWordOkSend()
     {
         return "";
     }
-    std::string CPop3ServerHandler::GetNextStepCmd(const POP3_SERVER_STEP_t &step)
+    std::string CPop3ServerProtoHandler::GetNextStepCmd(const POP3_SERVER_STEP_t &step)
     {
         switch (step)
         {
@@ -222,7 +222,7 @@ STLS
         }
     }
 
-    bool CPop3ServerHandler::OnUser(const std::string &strUser)
+    bool CPop3ServerProtoHandler::OnUser(const std::string &strUser)
     {
         LOG_INFO(g_log,"USER:{} {}",strUser,__LINE__);
         CPop3ProtoReqCmd cmd;
@@ -244,7 +244,41 @@ STLS
         }
     }
 
-    bool CPop3ServerHandler::OnPassword(const std::string &strPasswd)
+    void CPop3ServerProtoHandler::MailInfoUpdate()
+    {
+        m_strEmailListDetail.clear();
+        m_strEmailStateSummary.clear();
+        m_emailArray.clear();
+        if (m_db)
+        {
+            m_db->GetRecvMailInfo(m_strUserAddr, m_emailArray);
+        }
+        else
+        {
+            LOG_ERROR(g_log, "Pop3 Handle User:  {}", m_strUserAddr);
+        }
+        if (!m_emailArray.empty())
+        {
+            std::size_t count = m_emailArray.size();
+            std::size_t nSumSize = 0;
+            std::string strDetail;
+            for (std::size_t i = 1; i <= count; i++)
+            {
+                nSumSize+= m_emailArray[i].emailBytes_;
+                strDetail += std::to_string(i) + std::to_string(m_emailArray[i].emailBytes_)+ "\r\n";
+                LOG_INFO(g_log, "Pop3 Handle User:  {} Time:{}", m_strUserAddr, m_emailArray[i - 1].toString());
+            }
+            m_strEmailListDetail = "+OK " + std::to_string(count) + " \r\n";
+            m_strEmailStateSummary = m_strEmailListDetail;
+            m_strEmailListDetail += strDetail;
+            m_strEmailListDetail += ". \r\n";
+        }
+        else
+        {
+            LOG_ERROR(g_log, "Pop3 Handle User:  {} No Email", m_strUserAddr);
+        }
+    }
+    bool CPop3ServerProtoHandler::OnPassword(const std::string &strPasswd)
     {
         CPop3ProtoReqCmd cmd;
         PARSE_POP3_RESULT result = CPop3ProtoReqCmd::FromString(strPasswd, cmd);
@@ -257,6 +291,7 @@ STLS
             if (m_db && m_db->IsPasswordRight(m_strUserAddr, m_strPassword))
             {
                 LOG_INFO(g_log,"User: {} Verify Succeed",m_strUserAddr);
+                MailInfoUpdate();
                 return true;
             }
             else
@@ -273,7 +308,7 @@ STLS
         }
     }
 
-    bool CPop3ServerHandler::OnRecv(const std::string &strRecv)
+    bool CPop3ServerProtoHandler::OnRecv(const std::string &strRecv)
     {
         if (strRecv.empty())
         {

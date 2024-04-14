@@ -1,10 +1,10 @@
 #include "CTcpClient.h"
+#include "Log.h"
 namespace tiny_email
 {
-    CTcpClient::CTcpClient(asio::io_context& service,const log_ptr_t log,const INetWorkHandler_SHARED_PTR handler):
+    CTcpClient::CTcpClient(asio::io_context& service,const INetWorkHandler_SHARED_PTR handler):
     m_ioService(service),
     m_socket(service),
-    m_log(log),
     m_handler(handler)
     {
 
@@ -18,7 +18,7 @@ namespace tiny_email
         auto iter = resolver.resolve(query);
         auto self = shared_from_this();
         asio::async_connect(m_socket,iter,[self,this](std::error_code ec,asio::ip::tcp::endpoint pt){
-            m_log->info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
+            //m_log->info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
             this->HandleConnect(ec);
         });
 
@@ -32,7 +32,7 @@ namespace tiny_email
         auto iter = resolver.resolve(ip,std::to_string(Port));
         auto self = shared_from_this();
         asio::async_connect(m_socket,iter,[self,this](std::error_code ec,asio::ip::tcp::endpoint pt){
-            m_log->info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
+            //m_log->info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
             this->HandleConnect(ec);
         });
         return true;
@@ -48,7 +48,7 @@ namespace tiny_email
             asio::async_write(m_socket,asio::buffer(m_sendBuf,strValue.length()),[this,self,strValue](std::error_code ec,std::size_t length){
                 if(!ec)
                 {
-                    this->m_log->info("Send:{} Length:{}",strValue,length);
+                    //this->m_log->info("Send:{} Length:{}",strValue,length);
                 }
                 if(m_bShouldClose)
                 {
@@ -65,9 +65,9 @@ namespace tiny_email
         memset(m_recvBuf,0,256);
         auto self = shared_from_this();
         m_socket.async_read_some(asio::buffer(m_recvBuf,255),[this,self](std::error_code ec,std::size_t length){
-            if(m_log)
+            //if(m_log)
             {
-                m_log->info("Recv:{}",std::string(m_recvBuf,length));
+                //m_log->info("Recv:{}",std::string(m_recvBuf,length));
             }
             if(!ec)
             {
@@ -89,7 +89,7 @@ namespace tiny_email
     {
         if(!ec)
         {
-            m_log->info("Connect To Server Succeed");
+            //m_log->info("Connect To Server Succeed");
             m_bConnected = true;
             auto handler = m_handler.lock();
             if(handler)
@@ -100,7 +100,7 @@ namespace tiny_email
         }
         else
         {
-            m_log->info("Connect To Server Failed,{}",ec.message());
+            //m_log->info("Connect To Server Failed,{}",ec.message());
             m_bConnected = false;
         }
     }

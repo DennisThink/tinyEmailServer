@@ -7,13 +7,13 @@
 #include "Log.h"
 namespace tiny_email
 {
-    class CPop3ServerHandler
+    class CPop3ServerProtoHandler
     {
     public:
-        CPop3ServerHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);
+        CPop3ServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);
         bool OnClientReq(const std::string strValue);
         std::string GetResponse();
-        virtual ~CPop3ServerHandler();
+        virtual ~CPop3ServerProtoHandler();
     protected:
         bool OnUser(const std::string& strUser);
         bool OnPassword(const std::string& strPasswd);
@@ -23,6 +23,7 @@ namespace tiny_email
         bool OnList(const std::string& strRecv);
         bool OnCapa(const std::string& strRecv);
     private:
+        void MailInfoUpdate();
         std::string GetNextStepCmd(const POP3_SERVER_STEP_t& step);
         bool OnRecv(const std::string &strRecv);
         std::string GetPassWordOkSend();
@@ -36,8 +37,9 @@ namespace tiny_email
         std::string m_emailData;
         int m_errorCmdCount;
         std::string m_strResponse;
+        std::string m_strEmailStateSummary;//Total 
+        std::string m_strEmailListDetail;//Each email a line
         CDataBaseInterface_SHARED_PTR m_db;
-        //LogBase_S_PTR m_log;
         EmailInfoArray_t m_emailArray;
     public:
     };
