@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(tiny_email_server)
+SET(CMAKE_CXX_STANDARD 20)
 add_subdirectory(./src/socket_cpp_email_server)
 add_subdirectory(./src/asio_email_server)
 add_subdirectory(./src/log_demo)
