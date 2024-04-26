@@ -10,6 +10,7 @@ int main(int argc,char* argv[])
     servercfg.m_strDomain = "email.test.com";
     servercfg.m_smtpServer.port_=2125;
     servercfg.m_pop3Server.port_=2110;
+    servercfg.m_imapServer.port_ = 2143;
     server.Start(servercfg);
     return 0;
 }

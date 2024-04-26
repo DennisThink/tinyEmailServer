@@ -4,12 +4,13 @@
 #include "CTcpClient.h"
 #include "thirdLib.h"
 #include "DataBaseInterface.h"
+#include "../imap/imap_server_handler.h"
 namespace tiny_email
 {
     class CImapServerHandler:public INetWorkHandler
     {
     public:
-       explicit CImapServerHandler(log_ptr_t log,CDataBaseInterface_SHARED_PTR ptr):m_log(log){}
+        explicit CImapServerHandler(CDataBaseInterface_SHARED_PTR ptr, const std::string strDomainName);
        virtual ~CImapServerHandler()=default;
        virtual void OnConnected() override;
        virtual void OnSend() override;
@@ -22,7 +23,7 @@ namespace tiny_email
            m_client = tcpSock;
            if(m_client->isConnected())
            {
-                //m_client->Send(m_proto.GetSend());
+                m_client->Send(m_proto->GetResponse());
            }
        }
        void Start()
@@ -31,7 +32,8 @@ namespace tiny_email
        }
     private:
        CTcpClient_ptr_t m_client;
-       log_ptr_t m_log;
+       CDataBaseInterface_SHARED_PTR m_db;
+       std::shared_ptr<CImapServerProtoHandler> m_proto;
     };
     using CImapServerHandler_SHARED_PTR = std::shared_ptr<CImapServerHandler>;
 }

@@ -9,10 +9,18 @@ namespace tiny_email
     {
 
     }
-
+    CImapServerHandler::CImapServerHandler(CDataBaseInterface_SHARED_PTR ptr, const std::string strDomainName)
+    {
+        m_db = ptr;
+        m_proto = std::make_shared<CImapServerProtoHandler>(ptr, strDomainName);
+    }
     void CImapServerHandler::OnRecive(const std::string strValue)
     {
-        //m_proto.OnRecv(strValue);
-        //m_client->Send(m_proto.GetSend());
+        if (m_proto)
+        {
+            m_proto->OnClientReq(strValue);
+            std::string strRsp = m_proto->GetResponse();
+            m_client->Send(strRsp);
+        }
     }
 }

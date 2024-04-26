@@ -26,8 +26,8 @@ namespace tiny_email
         m_pop3Handler = std::make_shared<CPop3Server>(m_ioService,"127.0.0.1",serverCfg.m_pop3Server.port_,m_dataPtr,serverCfg.m_strDomain);
         m_pop3Handler->Start();
 
-        //m_imapHandler = std::make_shared<CImapServer>(m_ioService,g_console,"127.0.0.1",2143,m_dataPtr);
-        //m_imapHandler->Start();
+        m_imapHandler = std::make_shared<CImapServer>(m_ioService,"127.0.0.1", serverCfg.m_imapServer.port_,m_dataPtr, serverCfg.m_strDomain);
+        m_imapHandler->Start();
         m_ioService.run();
     }
 }
