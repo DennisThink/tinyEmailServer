@@ -4,16 +4,18 @@
 #include <iostream>
 TEST_CASE("database_test") {
     tiny_email::CSqliteDataBase db("email_test.db");
-    CHECK_FALSE(db.IsUserExist("test"));
-    db.AddUser("test","test");
-    CHECK(db.IsUserExist("test"));
-    CHECK(db.IsPasswordRight("test","test"));
+    CHECK_FALSE(db.IsUserExist("test@test.com"));
+    db.AddUser("test@test.com","test");
+    CHECK(db.IsUserExist("test@test.com"));
+    CHECK(db.IsPasswordRight("test@test.com","test"));
 
     tiny_email::email_info_t info;
     {
         info.emailTime_ = tiny_email::CProtoUtil::Now();
         info.emailSender_.name_ = "test";
+        info.emailSender_.emailAddr_ = "test@test.com";
         info.emailReceiver_.name_ = "test1";
+        info.emailReceiver_.emailAddr_ = "test1@test.com";
         info.subject_ = "Demo Test";
         info.context_ = "test";
         CHECK(db.SaveSendMailInfo(info));
@@ -41,6 +43,6 @@ TEST_CASE("database_test") {
             std::cout<<item.emailTime_<<std::endl;
         }
     }
-    CHECK(db.RemoveUser("test"));
-    CHECK_FALSE(db.IsUserExist("test"));
+    CHECK(db.RemoveUser("test@test.com"));
+    CHECK_FALSE(db.IsUserExist("test@test.com"));
 }

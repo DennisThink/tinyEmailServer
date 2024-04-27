@@ -21,7 +21,7 @@ namespace tiny_email
                     std::string strCreateUserTable("CREATE TABLE T_USER(ID INTEGER PRIMARY KEY AUTOINCREMENT,USER_NAME TEXT,PASS_WORD TEXT);");
                     SQLite::Transaction tr(*g_db);
                     g_db->exec(strCreateUserTable);
-                    std::string strCreateSendEmailTable("CREATE TABLE T_EMAIL_SEND(ID INTEGER PRIMARY KEY AUTOINCREMENT,SENDER TEXT,RECEIVER TEXT,SUBJECT TEXT,CONTENT TEXT,TIME TEXT);");
+                    std::string strCreateSendEmailTable("CREATE TABLE T_EMAIL_SEND(ID INTEGER PRIMARY KEY AUTOINCREMENT,SENDER_NAME TEXT,SENDER_EMAIL TEXT,RECEIVER_NAME TEXT,RECEIVER_EMAIL TEXT,SUBJECT TEXT,CONTENT TEXT,TIME TEXT);");
                     g_db->exec(strCreateSendEmailTable);
                     tr.commit();
                 }
@@ -105,13 +105,15 @@ namespace tiny_email
         {
             try
             {
-                std::string strInsertEmailSend = "INSERT INTO T_EMAIL_SEND(SENDER,RECEIVER,SUBJECT,CONTENT,TIME) VALUES(?,?,?,?,?)";
+                std::string strInsertEmailSend = "INSERT INTO T_EMAIL_SEND(SENDER_NAME,SENDER_EMAIL,RECEIVER_NAME,RECEIVER_EMAIL,SUBJECT,CONTENT,TIME) VALUES(?,?,?,?,?,?,?)";
                 SQLite::Statement query(*g_db, strInsertEmailSend);
                 query.bind(1, email.emailSender_.name_);
-                query.bind(2, email.emailReceiver_.name_);
-                query.bind(3, email.subject_);
-                query.bind(4, email.context_);
-                query.bind(5, std::to_string(email.emailTime_));
+                query.bind(2, email.emailSender_.emailAddr_);
+                query.bind(3,email.emailReceiver_.name_);
+                query.bind(4, email.emailReceiver_.emailAddr_);
+                query.bind(5, email.subject_);
+                query.bind(6, email.context_);
+                query.bind(7, std::to_string(email.emailTime_));
                 query.exec();
                 bResult = true;
             }
@@ -130,16 +132,18 @@ namespace tiny_email
         {
             try
             {
-                std::string strQueryEmailReceive = "SELECT SENDER,RECEIVER,SUBJECT,CONTENT FROM T_EMAIL_SEND WHERE RECEIVER == ?";
+                std::string strQueryEmailReceive = "SELECT SENDER_NAME,SENDER_EMAIL,RECEIVER_NAME,RECEIVER_EMAIL,SUBJECT,CONTENT FROM T_EMAIL_SEND WHERE RECEIVER_EMAIL == ?";
                 SQLite::Statement query(*g_db, strQueryEmailReceive);
                 query.bind(1, userName);
                 while (query.executeStep())
                 {
                     email_info_t email;
-                    email.emailSender_.emailAddr_ = query.getColumn(0).getString();
-                    email.emailReceiver_.emailAddr_ = query.getColumn(1).getString();
-                    email.subject_ = query.getColumn(2).getString();
-                    email.context_ = query.getColumn(3).getString();
+                    email.emailSender_.name_ = query.getColumn(0).getString();
+                    email.emailSender_.emailAddr_ = query.getColumn(1).getString();
+                    email.emailReceiver_.name_ = query.getColumn(2).getString();
+                    email.emailReceiver_.emailAddr_ = query.getColumn(3).getString();
+                    email.subject_ = query.getColumn(4).getString();
+                    email.context_ = query.getColumn(5).getString();
                     emailArray.push_back(email);
                 }
                 return true;

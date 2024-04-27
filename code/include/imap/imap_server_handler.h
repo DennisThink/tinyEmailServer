@@ -4,14 +4,16 @@
 #include "DataBaseInterface.h"
 #include <string>
 #include "Log.h"
+#include "CEmailServerProtoHandler.h"
 namespace tiny_email
 {
-    class CImapServerProtoHandler
+    class CImapServerProtoHandler: public CEmailServerProtoHandlerInterface
     {
     public:
         CImapServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr, const std::string strDomainName);
-        bool OnClientReq(const std::string strValue);
-        std::string GetResponse();
+        virtual bool OnClientReq(const std::string strValue) override;
+        virtual std::string GetResponse() override;
+        virtual bool IsFinished() override;
         virtual ~CImapServerProtoHandler();
     public:
         bool OnClientConnect(const std::string strValue);
@@ -36,14 +38,12 @@ namespace tiny_email
         std::string m_strUserName;
         std::string m_strPassword;
         bool m_bAuthFinish;
-        std::string m_strEmailDomain;
         std::string m_emailData;
         int m_errorCmdCount;
         std::string m_strReceive;
         std::string m_strResponse;
         std::string m_strEmailStateSummary;//Total 
         std::string m_strEmailListDetail;//Each email a line
-        CDataBaseInterface_SHARED_PTR m_db;
         EmailInfoArray_t m_emailArray;
     public:
     };

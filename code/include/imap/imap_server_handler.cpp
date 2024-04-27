@@ -3,7 +3,7 @@
 namespace tiny_email
 {
 
-    CImapServerProtoHandler::CImapServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr, const std::string strDomainName)
+    CImapServerProtoHandler::CImapServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr, const std::string strDomainName):CEmailServerProtoHandlerInterface(dbPtr,strDomainName)
     {
         OnClientConnect("");
     }
@@ -55,6 +55,12 @@ namespace tiny_email
         return false;
 
     }
+
+    bool CImapServerProtoHandler::IsFinished()
+    {
+        return false;
+    }
+
     std::string  CImapServerProtoHandler::GetResponse()
     {
         std::string strResult = m_strResponse;

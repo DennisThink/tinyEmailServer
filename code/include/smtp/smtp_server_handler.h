@@ -4,15 +4,16 @@
 #include "CProtoCode.h"
 #include "DataBaseInterface.h"
 #include <string>
+#include "CEmailServerProtoHandler.h"
 namespace tiny_email
 {
-    class CSmtpServerProtoHandler
+    class CSmtpServerProtoHandler:public CEmailServerProtoHandlerInterface
     {
     public:
         CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);
-        bool OnClientReq(const std::string strValue);
-        bool IsFinished();
-        std::string GetResponse();
+        virtual bool OnClientReq(const std::string strValue) override;
+        virtual bool IsFinished() override;
+        virtual std::string GetResponse() override;
         std::string UserName();
         std::string GetPassowrd();
         virtual ~CSmtpServerProtoHandler();

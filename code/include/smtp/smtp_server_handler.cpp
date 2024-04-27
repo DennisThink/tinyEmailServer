@@ -4,16 +4,15 @@
 #include "ProtoUtil.h"
 #include "LogUtil.h"
 #include <iostream>
+#include "CEmailServerProtoHandler.h"
 namespace tiny_email
 {
     static auto g_log = GetLogger();
-    CSmtpServerProtoHandler::CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName)
+    CSmtpServerProtoHandler::CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoHandlerInterface(dbPtr,strDomainName)
     {
-        m_strEmailDomain = strDomainName;
         m_step = Smtp_Server_Step_t::SMTP_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
         m_step = Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST;
-        m_db = dbPtr;
         m_bFinished = false;
     }
 

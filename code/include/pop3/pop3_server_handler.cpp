@@ -7,12 +7,10 @@
 namespace tiny_email
 {
     static auto g_log = GetLogger();
-    CPop3ServerProtoHandler::CPop3ServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName)
+    CPop3ServerProtoHandler::CPop3ServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoHandlerInterface(dbPtr, strDomainName)
     {
-        m_strEmailDomain = strDomainName;
         m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
-        m_db = dbPtr;
         //m_log=std::make_shared<LogConsole>();
     }
 
@@ -58,6 +56,11 @@ namespace tiny_email
     }
 
     bool CPop3ServerProtoHandler::OnNoOp(const std::string &strRecv)
+    {
+        return false;
+    }
+
+    bool CPop3ServerProtoHandler::IsFinished()
     {
         return false;
     }
@@ -165,7 +168,7 @@ STLS
         {
         case POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT:
         {
-            std::string strResponse = "+OK Welcome to " + m_strEmailDomain+ "\r\n";
+            std::string strResponse = "+OK Welcome to " + m_strDomainName+ "\r\n";
             return strResponse;
         }
         break;
@@ -232,8 +235,8 @@ STLS
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_OK;
             //m_strUserName = CProtoUtil::CreateUserAddrFromNameAndDomain(CProtoUtil::Trim(cmd.GetMessage()),m_strEmailDomain);
             m_strUserName = CProtoUtil::Trim(cmd.GetMsg());
-            LOG_INFO(g_log,"User {} {}",m_strUserName,m_strEmailDomain);
-            m_strUserAddr = CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strEmailDomain);
+            LOG_INFO(g_log,"User {} {}",m_strUserName, m_strDomainName);
+            m_strUserAddr = CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName, m_strDomainName);
             LOG_INFO(g_log,"User: {} is login on Pop3 {}",m_strUserName,m_strUserAddr);
             return true;
         }
