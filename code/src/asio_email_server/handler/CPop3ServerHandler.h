@@ -4,7 +4,7 @@
 #include "CTcpClient.h"
 #include "thirdLib.h"
 #include "DataBaseInterface.h"
-#include "../../include/pop3/pop3_server_handler.h"
+#include "pop3_server_handler.h"
 namespace tiny_email
 {
     class CPop3Handler:public INetWorkHandler

@@ -1,6 +1,6 @@
 #include "doctest.h"
 #include "ProtoUtil.h"
-#include "../imap/CImapProtoCmd.h"
+#include "CImapProtoCmd.h"
 TEST_CASE("proto util test") {
 	using namespace tiny_email;
 	//CAPABILITY Good
