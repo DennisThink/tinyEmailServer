@@ -35,6 +35,7 @@ SET(EMAIL_SERVER CEmailServer.h CEmailServer.cpp
                  ./handler/CSmtpServerHandler.cpp
                  ./handler/CPop3ServerHandler.h  
                  ./handler/CPop3ServerHandler.cpp
+                 ./handler/CNetServerHandler.h
                  ${INC_BASE}/smtp/smtp_server_handler.cpp 
                  ${INC_BASE}/pop3/pop3_server_handler.cpp
                  ${INC_BASE}/imap/imap_server_handler.cpp
