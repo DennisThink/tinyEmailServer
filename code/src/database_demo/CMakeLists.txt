@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 project(database_demo)
 set(CMAKE_CXX_STANDARD 20)
+if(WIN32)
+add_definitions(-DWINDOWS)
+else()
 SET(CMAKE_CXX_FLAGS "-g")
+link_libraries(pthread)
+endif()
+
 SET(INC_BASE ../../include)
 include_directories(${INC_BASE}/log/)
 include_directories(${INC_BASE}/thirdparty/spdlog/include/)

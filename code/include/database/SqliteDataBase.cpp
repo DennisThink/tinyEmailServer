@@ -13,6 +13,7 @@ namespace tiny_email
         }
         catch (std::exception &ec)
         {
+            std::cout << "Exception:  " << ec.what() << std::endl;
             if (!g_db)
             {
                 try
@@ -60,6 +61,7 @@ namespace tiny_email
             }
             catch (std::exception &ec)
             {
+                std::cout << "Exception:  " << ec.what() << std::endl;
             }
         }
     }
@@ -119,6 +121,7 @@ namespace tiny_email
             }
             catch (std::exception &ec)
             {
+                std::cout << "Exception:  " << ec.what() << std::endl;
                 bResult = false;
             }
         }
@@ -150,6 +153,7 @@ namespace tiny_email
             }
             catch (std::exception &ec)
             {
+                std::cout << "Exception:  " << ec.what() << std::endl;
             }
         }
         return false;
@@ -171,6 +175,7 @@ namespace tiny_email
             }
             catch (std::exception &ec)
             {
+                std::cout << "Exception:  " << ec.what() << std::endl;
                 bResult = false;
             }
         }
@@ -192,6 +197,7 @@ namespace tiny_email
             }
             catch (std::exception &ec)
             {
+                std::cout << "Exception:  " << ec.what() << std::endl;
                 bResult = false;
             }
         }
