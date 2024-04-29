@@ -11,6 +11,7 @@ namespace tiny_email
     {
         m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);
+        m_bFinished = false;
         //m_log=std::make_shared<LogConsole>();
     }
 
@@ -48,6 +49,10 @@ namespace tiny_email
                         m_strResponse = GetNextStepCmd(m_step);
                     }
                     m_step = stepArrayPop[i].nextStep_;
+                    if (reqCmd.GetCode() == POP3_CMD_t::POP3_CMD_QUIT)
+                    {
+                        m_bFinished = true;
+                    }
                     return true;
                 }
             }
@@ -77,7 +82,7 @@ namespace tiny_email
 
     bool CPop3ServerProtoHandler::OnState(const std::string &strRecv)
     {
-        m_strResponse = "+OK 1 102\r\n";
+        m_strResponse = "+OK 0\r\n";
         return true;
     }
     bool CPop3ServerProtoHandler::OnRetr(const std::string &strRecv)
@@ -131,6 +136,7 @@ namespace tiny_email
         }
         else
         {
+            m_strResponse = "+OK 0 .\r\n";
             LOG_ERROR(g_log,"Pop3 Handle User:  {} No Email",m_strUserAddr);
         }
         return true;
@@ -278,6 +284,7 @@ STLS
         }
         else
         {
+            m_strEmailListDetail = "+OK 0 \r\n";
             LOG_ERROR(g_log, "Pop3 Handle User:  {} No Email", m_strUserAddr);
         }
     }
@@ -295,6 +302,7 @@ STLS
             {
                 LOG_INFO(g_log,"User: {} Verify Succeed",m_strUserAddr);
                 MailInfoUpdate();
+                m_strResponse = m_strEmailListDetail;
                 return true;
             }
             else
@@ -306,7 +314,6 @@ STLS
         else
         {
             m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_BAD;
-
             return false;
         }
     }

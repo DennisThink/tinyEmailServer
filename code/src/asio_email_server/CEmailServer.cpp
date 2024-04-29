@@ -31,7 +31,7 @@ namespace tiny_email
             m_imapHandler = std::make_shared<CImapServer>(m_ioService, "127.0.0.1", serverCfg.m_imapServer.port_, m_dataPtr, serverCfg.m_strDomain);
             m_imapHandler->Start();
         }
-        {
+        /* {
             m_smtpHandlerNew = std::make_shared<CSmtpServerNew>(m_ioService, "127.0.0.1", serverCfg.m_smtpServer.port_ + 1, m_dataPtr, serverCfg.m_strDomain);
             m_smtpHandlerNew->Start();
 
@@ -40,7 +40,7 @@ namespace tiny_email
 
             m_imapHandlerNew = std::make_shared<CImapServerNew>(m_ioService, "127.0.0.1", serverCfg.m_imapServer.port_ + 1, m_dataPtr, serverCfg.m_strDomain);
             m_imapHandler->Start();
-        }
+        }*/
         m_ioService.run();
     }
 }

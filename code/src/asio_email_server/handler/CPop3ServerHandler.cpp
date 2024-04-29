@@ -13,10 +13,18 @@ namespace tiny_email
 
     void CPop3Handler::OnRecive(const std::string strValue)
     {
+      
         if (!strValue.empty())
         {
+            tiny_email::Info("Client: {} ", strValue);
             m_proto->OnClientReq(strValue);
-            m_client->Send(m_proto->GetResponse());
+            std::string strRsp = m_proto->GetResponse();
+            tiny_email::Info("Server: {} ", strRsp);
+            m_client->Send(strRsp);
+            if (m_proto->IsFinished())
+            {
+                m_client->Close();
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ namespace tiny_email
         bool OnRetr(const std::string& strRecv);
         bool OnList(const std::string& strRecv);
         bool OnCapa(const std::string& strRecv);
+        bool OnQuit(const std::string& strRecv);
     private:
         void MailInfoUpdate();
         std::string GetNextStepCmd(const POP3_SERVER_STEP_t& step);
@@ -41,6 +42,7 @@ namespace tiny_email
         std::string m_strEmailStateSummary;//Total 
         std::string m_strEmailListDetail;//Each email a line
         EmailInfoArray_t m_emailArray;
+        bool m_bFinished;
     public:
     };
 }
