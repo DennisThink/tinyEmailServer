@@ -1,7 +1,17 @@
 cmake_minimum_required(VERSION 3.0)
 project(log_demo)
 set(CMAKE_CXX_STANDARD 20)
+
+if(WIN32)
+add_definitions(-DWINDOWS)
+add_compile_options(/W3)
+#add_compile_options(/WX)
+else()
+add_compile_definitions(-Wall) 
 SET(CMAKE_CXX_FLAGS "-g")
+link_libraries(pthread)
+endif()
+
 include_directories(../../include/log/)
 include_directories(../../include/thirdparty/spdlog/include/)
 include_directories(../../include/thirdparty/fmt/include/)

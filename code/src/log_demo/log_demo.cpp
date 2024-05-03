@@ -1,6 +1,7 @@
 #include "Log.h"
 int main(int argc, char *argv[])
 {
+    std::cout << argc << "  " << argv[0] << std::endl;
     //{
     //    auto logger = GetLogger();
     //    LOG_DEBUG(logger, "INFO");

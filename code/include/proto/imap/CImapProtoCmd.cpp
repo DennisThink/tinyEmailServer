@@ -5,7 +5,7 @@
 namespace tiny_email
 {
 	#ifdef WINDOWS
-	#define STRICMP stricmp
+	#define STRICMP _stricmp
 	#else
 	#define STRICMP strcasecmp
 	#endif

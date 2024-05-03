@@ -9,7 +9,7 @@
 namespace tiny_email
 {
     template<typename... T>
-    inline void Debug(const std::string_view strLog, T&&... args)
+    inline void Debug(const std::string strLog, T&&... args)
     {
         auto strMsg = std::vformat(strLog, std::make_format_args(args...));
         auto logger = GetLogger();
@@ -20,7 +20,7 @@ namespace tiny_email
     }
 
     template<typename... T>
-    inline void Info(const std::string_view strLog, T&&... args)
+    inline void Info(const std::string strLog, T&&... args)
     {
         auto strMsg = std::vformat(strLog, std::make_format_args(args...));
         auto logger = GetLogger();
@@ -31,7 +31,7 @@ namespace tiny_email
     }
 
     template<typename... T>
-    inline void Warn(const std::string_view strLog, T&&... args)
+    inline void Warn(const std::string strLog, T&&... args)
     {
         auto strMsg = std::vformat(strLog, std::make_format_args(args...));
         auto logger = GetLogger();
@@ -42,7 +42,7 @@ namespace tiny_email
     }
 
     template<typename... T>
-    inline void Error(const std::string_view strLog, T&&... args)
+    inline void Error(const std::string strLog, T&&... args)
     {
         auto strMsg = std::vformat(strLog, std::make_format_args(args...));
         auto logger = GetLogger();
@@ -52,7 +52,7 @@ namespace tiny_email
         }
     }
     template<typename... T>
-    inline void Fatal(const std::string_view strLog, T&&... args)
+    inline void Fatal(const std::string strLog, T&&... args)
     {
         auto strMsg = std::vformat(strLog, std::make_format_args(args...));
         auto logger = GetLogger();

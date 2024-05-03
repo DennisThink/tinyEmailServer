@@ -18,7 +18,7 @@ namespace tiny_email
         auto iter = resolver.resolve(query);
         auto self = shared_from_this();
         asio::async_connect(m_socket,iter,[self,this](std::error_code ec,asio::ip::tcp::endpoint pt){
-            //m_log->info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
+            tiny_email::Info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
             this->HandleConnect(ec);
         });
 
@@ -32,7 +32,7 @@ namespace tiny_email
         auto iter = resolver.resolve(ip,std::to_string(Port));
         auto self = shared_from_this();
         asio::async_connect(m_socket,iter,[self,this](std::error_code ec,asio::ip::tcp::endpoint pt){
-            //m_log->info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
+            tiny_email::Info("RemoteAddr:{} {}",pt.address().to_string(),pt.port());
             this->HandleConnect(ec);
         });
         return true;

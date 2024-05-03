@@ -86,11 +86,25 @@ namespace tiny_email
     }
     std::string CImapServerProtoHandler::GetNextStepCmd(const POP3_SERVER_STEP_t& step)
     {
-        return "";
+        if (step == POP3_SERVER_STEP_t::POP3_STEP_BEGIN)
+        {
+            return "";
+        }
+        else
+        {
+            return "";
+        }
     }
     bool CImapServerProtoHandler::OnRecv(const std::string& strRecv)
     {
-        return false;
+        if (strRecv.empty())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     std::string CImapServerProtoHandler::GetPassWordOkSend()
     {
