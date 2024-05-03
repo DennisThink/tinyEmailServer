@@ -34,13 +34,20 @@ TEST_CASE("database_test") {
     CHECK(db.GetRecvMailInfo("test1",emailArray));
     {
         CHECK_FALSE(emailArray.empty());
-        CHECK_EQ((emailArray[0].emailSender_.emailAddr_),"test@test.com");
-        CHECK_EQ((emailArray[0].emailReceiver_.emailAddr_),"test1@test.com");
-        CHECK_EQ((emailArray[0].subject_),"Demo Test");
-        CHECK_EQ((emailArray[0].context_),"test");
-        for(auto item:emailArray)
+        if (!emailArray.empty())
         {
-            std::cout<<item.emailTime_<<std::endl;
+            CHECK_EQ((emailArray[0].emailSender_.emailAddr_), "test@test.com");
+            CHECK_EQ((emailArray[0].emailReceiver_.emailAddr_), "test1@test.com");
+            CHECK_EQ((emailArray[0].subject_), "Demo Test");
+            CHECK_EQ((emailArray[0].context_), "test");
+            for (auto item : emailArray)
+            {
+                std::cout << item.emailTime_ << std::endl;
+            }
+        }
+        else
+        {
+            CHECK_EQ(1, 2);
         }
     }
     CHECK(db.RemoveUser("test@test.com"));

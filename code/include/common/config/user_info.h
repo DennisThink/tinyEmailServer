@@ -100,6 +100,7 @@ namespace tiny_email
             return strRsp;
         }
     };
+    bool ParseConfigFromFile(const std::string strConfigName, email_server_config& config);
     bool ParseEmailForSmtp(const std::string& strContext,email_info_t& email);
     bool ParseEmailFromRecv(const std::string& strContext,email_info_t& email);
     bool Pop3RspFromEmail(const email_info_t&email,std::string& strRsp);

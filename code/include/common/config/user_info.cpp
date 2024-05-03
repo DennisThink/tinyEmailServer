@@ -1,5 +1,8 @@
 #include "user_info.h"
 #include "ProtoUtil.h"
+#include "nlohmann/json.hpp"
+#include <fstream>
+#include <istream>
 namespace tiny_email 
 {
 
@@ -92,5 +95,81 @@ namespace tiny_email
             }
         }
         return true;
+    }
+
+
+    /*
+    {
+    "domainName":"email.test.com";
+    "databaseName":"testemail.db",
+    "smtpServer":{
+    "ip":"127.0.0.1",
+    "port":2125
+    },
+    "pop3Server":{
+    "ip":"127.0.0.1",
+    "port":2110
+    },
+    "imapServer":{
+     "ip":"127.0.0.1",
+    "port":2134
+    }
+    }
+    */
+    bool ParseConfigFromFile(const std::string strConfigName, email_server_config& config)
+    {
+        std::ifstream ifile(strConfigName);
+        if (ifile.is_open())
+        {
+            nlohmann::json jData = nlohmann::json::parse(ifile);
+            if (jData["domainName"].is_string())
+            {
+                config.m_strDomain = jData["domainName"].get<std::string>();
+            }
+
+            if (jData["databaseName"].is_string())
+            {
+                config.m_strDataBaseName = jData["databaseName"].get<std::string>();
+            }
+
+            if (jData["smtpServer"].is_object())
+            {
+                if (jData["smtpServer"]["ip"].is_string())
+                {
+                    config.m_smtpServer.strIp_ = jData["smtpServer"]["ip"].get<std::string>();
+                }
+                if (jData["smtpServer"]["port"].is_number_integer())
+                {
+                    config.m_smtpServer.strIp_ = jData["smtpServer"]["port"].get<int>();
+                }
+            }
+            if (jData["pop3Server"].is_object())
+            {
+                if (jData["pop3Server"]["ip"].is_string())
+                {
+                    config.m_pop3Server.strIp_ = jData["pop3Server"]["ip"].get<std::string>();
+                }
+                if (jData["pop3Server"]["port"].is_number_integer())
+                {
+                    config.m_pop3Server.strIp_ = jData["pop3Server"]["port"].get<int>();
+                }
+            }
+            if (jData["imapServer"].is_object())
+            {
+                if (jData["imapServer"]["ip"].is_string())
+                {
+                    config.m_imapServer.strIp_ = jData["imapServer"]["ip"].get<std::string>();
+                }
+                if (jData["imapServer"]["port"].is_number_integer())
+                {
+                    config.m_imapServer.strIp_ = jData["imapServer"]["port"].get<int>();
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
