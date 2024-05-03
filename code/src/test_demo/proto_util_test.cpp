@@ -40,7 +40,7 @@ TEST_CASE("proto util test") {
 
     {
         std::string strConfigContent = R"({
-    "domainName":"email.test.com";
+    "domainName":"email.test.com",
     "databaseName":"testemail.db",
     "smtpServer":{
     "ip":"127.0.0.1",

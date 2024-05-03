@@ -140,7 +140,7 @@ namespace tiny_email
                 }
                 if (jData["smtpServer"]["port"].is_number_integer())
                 {
-                    config.m_smtpServer.strIp_ = jData["smtpServer"]["port"].get<int>();
+                    config.m_smtpServer.port_ = jData["smtpServer"]["port"].get<int>();
                 }
             }
             if (jData["pop3Server"].is_object())
@@ -151,7 +151,7 @@ namespace tiny_email
                 }
                 if (jData["pop3Server"]["port"].is_number_integer())
                 {
-                    config.m_pop3Server.strIp_ = jData["pop3Server"]["port"].get<int>();
+                    config.m_pop3Server.port_ = jData["pop3Server"]["port"].get<int>();
                 }
             }
             if (jData["imapServer"].is_object())
@@ -162,7 +162,7 @@ namespace tiny_email
                 }
                 if (jData["imapServer"]["port"].is_number_integer())
                 {
-                    config.m_imapServer.strIp_ = jData["imapServer"]["port"].get<int>();
+                    config.m_imapServer.port_ = jData["imapServer"]["port"].get<int>();
                 }
             }
             return true;
