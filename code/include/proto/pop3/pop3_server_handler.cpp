@@ -7,7 +7,7 @@
 namespace tiny_email
 {
     static auto g_log = GetLogger();
-    CPop3ServerProtoHandler::CPop3ServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoHandlerInterface(dbPtr, strDomainName)
+    CPop3ServerProtoHandler::CPop3ServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoInterface(dbPtr, strDomainName)
     {
         m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);

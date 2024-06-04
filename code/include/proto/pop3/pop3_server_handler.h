@@ -8,7 +8,7 @@
 #include "CEmailServerProtoHandler.h"
 namespace tiny_email
 {
-    class CPop3ServerProtoHandler: public CEmailServerProtoHandlerInterface
+    class CPop3ServerProtoHandler: public CEmailServerProtoInterface
     {
     public:
         CPop3ServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName);

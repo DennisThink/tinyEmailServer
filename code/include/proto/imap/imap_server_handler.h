@@ -3,11 +3,10 @@
 #include "CProtoCode.h"
 #include "DataBaseInterface.h"
 #include <string>
-#include "Log.h"
 #include "CEmailServerProtoHandler.h"
 namespace tiny_email
 {
-    class CImapServerProtoHandler: public CEmailServerProtoHandlerInterface
+    class CImapServerProtoHandler: public CEmailServerProtoInterface
     {
     public:
         CImapServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr, const std::string strDomainName);

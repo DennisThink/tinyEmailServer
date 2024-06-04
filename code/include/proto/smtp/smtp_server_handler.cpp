@@ -8,7 +8,7 @@
 namespace tiny_email
 {
     static auto g_log = GetLogger();
-    CSmtpServerProtoHandler::CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoHandlerInterface(dbPtr,strDomainName)
+    CSmtpServerProtoHandler::CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoInterface(dbPtr,strDomainName)
     {
         m_step = Smtp_Server_Step_t::SMTP_ON_CONNECT;
         m_strResponse = GetNextStepCmd(m_step);

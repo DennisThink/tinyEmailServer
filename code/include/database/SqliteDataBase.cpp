@@ -66,15 +66,6 @@ namespace tiny_email
         }
     }
 
-    std::string GetUserNameFromEmailAddr(std::string strEmailAddr)
-    {
-        auto atPos = strEmailAddr.find("@");
-        if (atPos != std::string::npos)
-        {
-            return strEmailAddr.substr(0, atPos);
-        }
-        return strEmailAddr;
-    }
 
     bool CSqliteDataBase::IsUserExist(std::string strUserName)
     {

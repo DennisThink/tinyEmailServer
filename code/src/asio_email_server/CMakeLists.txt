@@ -28,10 +28,10 @@ include_directories(${INC_BASE}/proto/smtp/)
 include_directories(${INC_BASE}/proto/pop3/)
 include_directories(${INC_BASE}/proto/imap/)
 include_directories(${INC_BASE}/log/)
+include_directories(${INC_BASE}/network/)
+include_directories(${INC_BASE}/network/tcpClient/)
+include_directories(${INC_BASE}/handler/)
 include_directories(.)
-include_directories(./network/)
-include_directories(./network/tcpClient/)
-include_directories(./handler/)
 SET(SERVED_BUILD_STATIC 1)
 if(WIN32)
 add_definitions(-DWINDOWS)
@@ -40,20 +40,20 @@ link_libraries(pthread)
 endif()
 SET(EMAIL_SERVER CEmailServer.h CEmailServer.cpp 
                  CTcpServer.h
-                 ./handler/CImapServerHandler.h  
-                 ./handler/CImapServerHandler.cpp
-                 ./handler/CSmtpServerHandler.h  
-                 ./handler/CSmtpServerHandler.cpp
-                 ./handler/CPop3ServerHandler.h  
-                 ./handler/CPop3ServerHandler.cpp
-                 ./handler/CNetServerHandler.h
+                 ${INC_BASE}/handler/CImapServerHandler.h  
+                 ${INC_BASE}/handler/CImapServerHandler.cpp
+                 ${INC_BASE}/handler/CSmtpServerHandler.h  
+                 ${INC_BASE}/handler/CSmtpServerHandler.cpp
+                 ${INC_BASE}/handler/CPop3ServerHandler.h  
+                 ${INC_BASE}/handler/CPop3ServerHandler.cpp
+                 ${INC_BASE}/handler/CNetServerHandler.h
                  ${INC_BASE}/proto/smtp/smtp_server_handler.cpp 
                  ${INC_BASE}/proto/pop3/pop3_server_handler.cpp
                  ${INC_BASE}/proto/imap/imap_server_handler.cpp
                  ${INC_BASE}/proto/pop3/CPop3ProtoCmd.cpp
                  ${INC_BASE}/proto/imap/CImapProtoCmd.cpp
-                 ./network/tcpClient/CTcpClient.h
-                 ./network/tcpClient/CTcpClient.cpp
+                 ${INC_BASE}/network/tcpClient/CTcpClient.h
+                 ${INC_BASE}/network/tcpClient/CTcpClient.cpp
                  ${INC_BASE}/common/ProtoUtil.cpp
                  ${INC_BASE}/common/config/user_info.cpp
                  ${INC_BASE}/log/LogUtil.cpp
