@@ -31,7 +31,7 @@ TEST_CASE("database_test") {
         CHECK(db.SaveSendMailInfo(info));
     }
     tiny_email::EmailInfoArray_t emailArray;
-    CHECK(db.GetRecvMailInfo("test1",emailArray));
+    CHECK(db.GetRecvMailInfo("test1@test.com",emailArray));
     {
         CHECK_FALSE(emailArray.empty());
         if (!emailArray.empty())

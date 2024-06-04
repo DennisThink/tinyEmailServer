@@ -4,19 +4,19 @@
 #include <string.h>
 namespace tiny_email
 {
-    class CEmailServerProtoHandlerInterface
+    class CEmailServerProtoInterface
     {
     public:
-        CEmailServerProtoHandlerInterface(CDataBaseInterface_SHARED_PTR dbPtr, const std::string strDomainName):m_db(dbPtr),m_strDomainName(strDomainName){}
+        CEmailServerProtoInterface(CDataBaseInterface_SHARED_PTR dbPtr, const std::string strDomainName):m_db(dbPtr),m_strDomainName(strDomainName){}
         virtual bool OnClientReq(const std::string strValue)=0;
         virtual std::string GetResponse()=0;
         virtual bool IsFinished() = 0;
-        virtual ~CEmailServerProtoHandlerInterface()=default;
+        virtual ~CEmailServerProtoInterface()=default;
     protected:
         CDataBaseInterface_SHARED_PTR m_db;
         std::string m_strDomainName;
     };
 
-    using CEmailServerProtoInterface_PTR = std::shared_ptr<CEmailServerProtoHandlerInterface>;
+    using CEmailServerProtoInterface_PTR = std::shared_ptr<CEmailServerProtoInterface>;
 }
 #endif

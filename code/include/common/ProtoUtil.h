@@ -21,6 +21,7 @@ namespace tiny_email
         static std::string Trim(const std::string &s);
         static std::time_t Now();
         static std::string TimeToString(const std::time_t t); 
+        static std::string GetUserNameFromEmailAddr(std::string strEmailAddr);
     };
 }
 #endif

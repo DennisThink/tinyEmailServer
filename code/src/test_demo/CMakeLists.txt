@@ -21,6 +21,8 @@ include_directories(${INC_BASE}/proto/pop3/)
 include_directories(${INC_BASE}/proto/smtp/)
 include_directories(${INC_BASE}/proto/imap/)
 include_directories(${INC_BASE}/database/)
+include_directories(${INC_BASE}/network/)
+include_directories(${INC_BASE}/network/tcpClient/)
 include_directories(${INC_BASE}/thirdparty/)
 include_directories(${INC_BASE}/thirdparty/sqlite/)
 
@@ -34,5 +36,14 @@ ${INC_BASE}/thirdparty/SQLiteCpp/src/Transaction.cpp)
 SET(SQLITE_FILE ${INC_BASE}/thirdparty/sqlite/sqlite3.c)
 SET(DATA_BASE_FILE ${SQLITE_CPP_FILE} ${SQLITE_FILE} ${INC_BASE}/database/SqliteDataBase.cpp)
 SET(PROTO_FILE ${INC_BASE}/common/ProtoUtil.cpp ${INC_BASE}/proto/pop3/CPop3ProtoCmd.cpp ${INC_BASE}/proto/imap/CImapProtoCmd.cpp)
-add_executable(test_demo ./test_demo.cpp ./proto_util_test.cpp ./database_test.cpp ./imap_proto_test.cpp ${DATA_BASE_FILE}  ${PROTO_FILE} ${INC_BASE}/common/config/user_info.cpp)
+add_executable(test_demo 
+				./test_demo.cpp 
+				./proto_util_test.cpp 
+				./database_test.cpp 
+				./imap_proto_test.cpp 
+				${INC_BASE}/proto/imap/imap_server_handler.cpp
+				${INC_BASE}/database/CMemDataBase.cpp
+				${DATA_BASE_FILE}  
+				${PROTO_FILE} 
+				${INC_BASE}/common/config/user_info.cpp)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin) 

@@ -19,6 +19,16 @@ namespace tiny_email
       return strDomainName;
     }
   }
+
+  std::string CProtoUtil::GetUserNameFromEmailAddr(std::string strEmailAddr)
+  {
+      auto atPos = strEmailAddr.find("@");
+      if (atPos != std::string::npos)
+      {
+          return strEmailAddr.substr(0, atPos);
+      }
+      return strEmailAddr;
+  }
   std::string CProtoUtil::GetPop3DomainFromMainDomain(const std::string strMainDomain)
   {
     std::string strDomainName;
