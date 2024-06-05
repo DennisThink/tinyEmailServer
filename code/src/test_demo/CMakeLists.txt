@@ -40,8 +40,12 @@ add_executable(test_demo
 				./test_demo.cpp 
 				./proto_util_test.cpp 
 				./database_test.cpp 
-				./imap_proto_test.cpp 
+				./imap_proto_test.cpp
+				./smtp_proto_test.cpp
+				${INC_BASE}/proto/smtp/smtp_server_handler.cpp
+				./pop3_proto_test.cpp
 				${INC_BASE}/proto/imap/imap_server_handler.cpp
+				${INC_BASE}/proto/pop3/pop3_server_handler.cpp
 				${INC_BASE}/database/CMemDataBase.cpp
 				${DATA_BASE_FILE}  
 				${PROTO_FILE} 

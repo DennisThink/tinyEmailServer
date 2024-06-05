@@ -7,7 +7,7 @@
 #include "CEmailServerProtoHandler.h"
 namespace tiny_email
 {
-    static auto g_log = GetLogger();
+    //static auto g_log = GetLogger();
     CSmtpServerProtoHandler::CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoInterface(dbPtr,strDomainName)
     {
         m_step = Smtp_Server_Step_t::SMTP_ON_CONNECT;
@@ -88,12 +88,12 @@ namespace tiny_email
         }
         if (step == Smtp_Server_Step_t::SMTP_RECV_AUTH_LOGIN_REQ)
         {
-            std::string strAuth2 = "334 dXNlcm5hbWU6\r\n";
+            std::string strAuth2 = "334 "+tiny_email::CProtoUtil::Base64Encode("Username:") + " \r\n";
             return strAuth2;
         }
         if (step == Smtp_Server_Step_t::SMTP_RECV_PASS_WORD_REQ)
         {
-            std::string strAuth2 = "334 UGFzc3dvcmQ6\r\n";
+            std::string strAuth2 = "334 " + tiny_email::CProtoUtil::Base64Encode("Password:") + " \r\n";
             return strAuth2;
         }
         if(step == Smtp_Server_Step_t::SMTP_NAME_PASS_VERIFY)
@@ -123,14 +123,6 @@ namespace tiny_email
         std::string strRsp = m_strResponse;
         m_strResponse.clear();
         return strRsp;
-    }
-    std::string CSmtpServerProtoHandler::UserName()
-    {
-        return "";
-    }
-    std::string CSmtpServerProtoHandler::GetPassowrd()
-    {
-        return "";
     }
     CSmtpServerProtoHandler::~CSmtpServerProtoHandler()
     {
@@ -202,12 +194,12 @@ namespace tiny_email
             m_strUserAddr = tiny_email::CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strEmailDomain);
             if(m_db->IsPasswordRight(m_strUserAddr,m_strPassword))
             {
-                LOG_INFO(g_log,"User {} verify Passed",m_strUserAddr);
+                //LOG_INFO(g_log,"User {} verify Passed",m_strUserAddr);
                 m_strResponse = "235 Authentication successful\r\n";
             }
             else
             {
-                LOG_ERROR(g_log,"UserName or password not right UserReq:{} {} {}",m_strUserAddr,m_strPassword,__LINE__);
+                //LOG_ERROR(g_log,"UserName or password not right UserReq:{} {} {}",m_strUserAddr,m_strPassword,__LINE__);
                 m_strResponse = "";
                 m_step = Smtp_Server_Step_t::SMTP_END;
             }
@@ -241,7 +233,7 @@ namespace tiny_email
                 {
                     email.emailTime_ = CProtoUtil::Now();
                     m_db->SaveSendMailInfo(email);
-                    LOG_INFO(g_log,"User {} email save succeed",m_strUserName);
+                    //LOG_INFO(g_log,"User {} email save succeed",m_strUserName);
                 }
             }
             m_bFinished = true;

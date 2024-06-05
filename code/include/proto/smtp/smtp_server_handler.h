@@ -14,8 +14,6 @@ namespace tiny_email
         virtual bool OnClientReq(const std::string strValue) override;
         virtual bool IsFinished() override;
         virtual std::string GetResponse() override;
-        std::string UserName();
-        std::string GetPassowrd();
         virtual ~CSmtpServerProtoHandler();
     private:
         std::string GetNextStepCmd(const Smtp_Server_Step_t& step);
