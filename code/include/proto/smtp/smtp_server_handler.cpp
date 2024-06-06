@@ -2,12 +2,11 @@
 #include "SqliteDataBase.h"
 #include "CProtoCmd.h"
 #include "ProtoUtil.h"
-#include "LogUtil.h"
+#include "Log.h"
 #include <iostream>
 #include "CEmailServerProtoHandler.h"
 namespace tiny_email
 {
-    //static auto g_log = GetLogger();
     CSmtpServerProtoHandler::CSmtpServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr,const std::string strDomainName):CEmailServerProtoInterface(dbPtr,strDomainName)
     {
         m_step = Smtp_Server_Step_t::SMTP_ON_CONNECT;
@@ -126,7 +125,7 @@ namespace tiny_email
     }
     CSmtpServerProtoHandler::~CSmtpServerProtoHandler()
     {
-        std::cout<<"EMAIL Data:  "<<m_emailData<<std::endl;
+        //std::cout<<"EMAIL Data:  "<<m_emailData<<std::endl;
     }
 
 
@@ -194,12 +193,12 @@ namespace tiny_email
             m_strUserAddr = tiny_email::CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strEmailDomain);
             if(m_db->IsPasswordRight(m_strUserAddr,m_strPassword))
             {
-                //LOG_INFO(g_log,"User {} verify Passed",m_strUserAddr);
+                tiny_email::Info("User{} verify Passed",m_strUserAddr);
                 m_strResponse = "235 Authentication successful\r\n";
             }
             else
             {
-                //LOG_ERROR(g_log,"UserName or password not right UserReq:{} {} {}",m_strUserAddr,m_strPassword,__LINE__);
+                tiny_email::Error("UserName or password not right UserReq:{} {} {}",m_strUserAddr,m_strPassword,__LINE__);
                 m_strResponse = "";
                 m_step = Smtp_Server_Step_t::SMTP_END;
             }
@@ -233,7 +232,7 @@ namespace tiny_email
                 {
                     email.emailTime_ = CProtoUtil::Now();
                     m_db->SaveSendMailInfo(email);
-                    //LOG_INFO(g_log,"User {} email save succeed",m_strUserName);
+                    tiny_email::Info("User {} email save succeed",m_strUserName);
                 }
             }
             m_bFinished = true;

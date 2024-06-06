@@ -11,10 +11,14 @@ TEST_CASE("pop3_proto_test") {
 	db_ptr->AddUser("test", "test");
 	auto handler = std::make_shared<tiny_email::CPop3ServerProtoHandler>(db_ptr, strDomain);
 	{
+		std::string strUserRsp = handler->GetResponse();
+		CHECK_EQ(strUserRsp, "+OK Welcome to test.com\r\n");
+	}
+	{
 		std::string strCmdUser = "USER test\r\n";
 		CHECK(handler->OnClientReq(strCmdUser));
 		std::string strUserRsp = handler->GetResponse();
-		CHECK_EQ(strUserRsp, "");
+		CHECK_EQ(strUserRsp, " +OK cpp mail user name\r\n");
 	}
 
 	{

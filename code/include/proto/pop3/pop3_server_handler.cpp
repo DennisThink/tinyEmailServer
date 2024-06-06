@@ -90,19 +90,20 @@ namespace tiny_email
         if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
         {
             std::size_t nIndex = std::atoll(cmd.GetMsg().c_str());
-            if(nIndex >= m_emailArray.size())
+            if( (!m_emailArray.empty()) && nIndex >= m_emailArray.size())
             {
                 nIndex = m_emailArray.size()-1;
+                std::string strRsp;
+                if (Pop3RspFromEmail(m_emailArray[nIndex], strRsp))
+                {
+                    m_strResponse = strRsp;
+                }
             }
             else
             {
-
+                return true;
             }
-            std::string strRsp;
-            if(Pop3RspFromEmail(m_emailArray[nIndex],strRsp))
-            {
-                m_strResponse = strRsp;
-            }
+          
         }
         tiny_email::Info("RETR Rsp:{}",m_strResponse);
         return true;
