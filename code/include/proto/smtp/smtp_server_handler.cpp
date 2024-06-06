@@ -125,7 +125,6 @@ namespace tiny_email
     }
     CSmtpServerProtoHandler::~CSmtpServerProtoHandler()
     {
-        //std::cout<<"EMAIL Data:  "<<m_emailData<<std::endl;
     }
 
 

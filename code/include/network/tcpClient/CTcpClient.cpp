@@ -48,7 +48,7 @@ namespace tiny_email
             asio::async_write(m_socket,asio::buffer(m_sendBuf,strValue.length()),[this,self,strValue](std::error_code ec,std::size_t length){
                 if(!ec)
                 {
-                    //this->m_log->info("Send:{} Length:{}",strValue,length);
+                    tiny_email::Info("Send:{} Length:{}",strValue,length);
                 }
                 if(m_bShouldClose)
                 {
@@ -65,10 +65,8 @@ namespace tiny_email
         memset(m_recvBuf,0,256);
         auto self = shared_from_this();
         m_socket.async_read_some(asio::buffer(m_recvBuf,255),[this,self](std::error_code ec,std::size_t length){
-            //if(m_log)
-            {
-                //m_log->info("Recv:{}",std::string(m_recvBuf,length));
-            }
+
+            tiny_email::Info("Recv:{}",std::string(m_recvBuf,length));
             if(!ec)
             {
                 auto handler = m_handler.lock();
@@ -89,7 +87,7 @@ namespace tiny_email
     {
         if(!ec)
         {
-            //m_log->info("Connect To Server Succeed");
+            tiny_email::Info("Connect To Server Succeed");
             m_bConnected = true;
             auto handler = m_handler.lock();
             if(handler)
@@ -100,7 +98,7 @@ namespace tiny_email
         }
         else
         {
-            //m_log->info("Connect To Server Failed,{}",ec.message());
+            tiny_email::Info("Connect To Server Failed,{}",ec.message());
             m_bConnected = false;
         }
     }
