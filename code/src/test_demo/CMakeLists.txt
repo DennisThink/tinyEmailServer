@@ -50,4 +50,4 @@ add_executable(test_demo
 				${DATA_BASE_FILE}  
 				${PROTO_FILE} 
 				${INC_BASE}/common/config/user_info.cpp)
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin) 
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../../bin)
