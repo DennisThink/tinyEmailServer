@@ -38,7 +38,7 @@ void StartPop3Server(const tiny_email::email_server_config& serverCfg)
                 }
                 memset(buff, 128, 0);
                 recvLen = -1;
-                recvLen = server.Receive(client, buff, 128, false);
+                recvLen = server.Receive(client, buff, 127, false);
                 if (recvLen <= 0)
                 {
                     break;

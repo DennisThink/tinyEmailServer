@@ -90,7 +90,7 @@ namespace tiny_email
         if (PARSE_POP3_RESULT::PARSE_POP3_SUCCEED == result)
         {
             std::size_t nIndex = std::atoll(cmd.GetMsg().c_str());
-            if( (!m_emailArray.empty()) && nIndex >= m_emailArray.size())
+            if( (!m_emailArray.empty()) && nIndex <= m_emailArray.size() && nIndex >=1)
             {
                 nIndex = m_emailArray.size()-1;
                 std::string strRsp;
@@ -116,6 +116,10 @@ namespace tiny_email
             tiny_email::Info("Pop3 Handle User : {}",m_strUserAddr);
             m_emailArray.clear();
             m_db->GetRecvMailInfo(m_strUserAddr, m_emailArray);
+            for (auto& item : m_emailArray)
+            {
+                tiny_email::Info("Email Detail :{}", item.toString());
+            }
         }
         else
         {

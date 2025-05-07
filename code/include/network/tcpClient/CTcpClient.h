@@ -28,6 +28,7 @@ namespace tiny_email
         bool isConnected()const {return m_bConnected;}
         void Close();
     protected:
+        void CheckShouldClose();
         void DoRead();
     private:
         bool m_bConnected = false;

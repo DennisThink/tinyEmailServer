@@ -6,7 +6,7 @@ namespace tiny_email
     CImapServerProtoHandler::CImapServerProtoHandler(CDataBaseInterface_SHARED_PTR dbPtr, const std::string strDomainName):CEmailServerProtoInterface(dbPtr,strDomainName)
     {
         OnClientConnect("");
-        m_step = IMAP_STEP_SERVER_BEGIN;
+        m_step = IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_BEGIN;
     }
 
     bool (CImapServerProtoHandler::*OnCmdFunction)(const std::string strValue);
@@ -19,15 +19,15 @@ namespace tiny_email
 
     static ImapElem_t imapArray[] =
     {
-        {IMAP_STEP_SERVER_BEGIN,IMAP_CMD_CAPABILITY,IMAP_STEP_SERVER_NOT_LOGIN,&CImapServerProtoHandler::OnCapability},
-        {IMAP_STEP_SERVER_NOT_LOGIN,IMAP_CMD_LOGIN,IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnLogin},
-        {IMAP_STEP_SERVER_LOGIN_SUCCEED,IMAP_CMD_NOOP,IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnNoop},
-        {IMAP_STEP_SERVER_LOGIN_SUCCEED,IMAP_CMD_SELECT,IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnSelect},
-        {IMAP_STEP_SERVER_LOGIN_SUCCEED,IMAP_CMD_EXAMINE,IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnExamine},
-        {IMAP_STEP_SERVER_LOGIN_SUCCEED,IMAP_CMD_LIST,IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnList},
-        {IMAP_STEP_SERVER_LOGIN_SUCCEED,IMAP_CMD_SEARCH,IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnSearchAll},
-        {IMAP_STEP_SERVER_LOGIN_SUCCEED,IMAP_CMD_FETCH,IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnFetchOne},
-        {IMAP_STEP_SERVER_LOGIN_SUCCEED,IMAP_CMD_LOGOUT,IMAP_STEP_SERVER_LOGIN_FAILED,&CImapServerProtoHandler::OnLogout}
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_BEGIN,ImapCode_t::IMAP_CMD_CAPABILITY,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_NOT_LOGIN,&CImapServerProtoHandler::OnCapability},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_NOT_LOGIN,ImapCode_t::IMAP_CMD_LOGIN,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnLogin},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,ImapCode_t::IMAP_CMD_NOOP,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnNoop},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,ImapCode_t::IMAP_CMD_SELECT,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnSelect},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,ImapCode_t::IMAP_CMD_EXAMINE,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnExamine},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,ImapCode_t::IMAP_CMD_LIST,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnList},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,ImapCode_t::IMAP_CMD_SEARCH,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnSearchAll},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,ImapCode_t::IMAP_CMD_FETCH,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,&CImapServerProtoHandler::OnFetchOne},
+        {IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_SUCCEED,ImapCode_t::IMAP_CMD_LOGOUT,IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_LOGIN_FAILED,&CImapServerProtoHandler::OnLogout}
 
     };
 
@@ -52,7 +52,7 @@ namespace tiny_email
                    }
                    else
                    {
-                       m_step = IMAP_STEP_SERVER_END;
+                       m_step = IMAP_SERVER_STEP_t::IMAP_STEP_SERVER_END;
                    }
                }
            }

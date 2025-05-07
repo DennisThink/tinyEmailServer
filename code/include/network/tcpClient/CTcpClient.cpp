@@ -5,7 +5,9 @@ namespace tiny_email
     CTcpClient::CTcpClient(asio::io_context& service,const INetWorkHandler_SHARED_PTR handler):
     m_ioService(service),
     m_socket(service),
-    m_handler(handler)
+    m_handler(handler),
+    m_bConnected(false),
+    m_bShouldClose(false)
     {
 
     }
@@ -40,6 +42,7 @@ namespace tiny_email
     
     bool CTcpClient::Send(const std::string& strValue)
     {
+        CheckShouldClose();
         if(isConnected())
         {
 			memset(m_sendBuf,0,256);
@@ -62,27 +65,36 @@ namespace tiny_email
 
     void CTcpClient::DoRead()
     {
-        memset(m_recvBuf,0,256);
-        auto self = shared_from_this();
-        m_socket.async_read_some(asio::buffer(m_recvBuf,255),[this,self](std::error_code ec,std::size_t length){
-
-            tiny_email::Info("Recv:{}",std::string(m_recvBuf,length));
-            if(!ec)
-            {
-                auto handler = m_handler.lock();
-                if(handler)
+        CheckShouldClose();
+        if (isConnected())
+        {
+            memset(m_recvBuf, 0, 256);
+            auto self = shared_from_this();
+            m_socket.async_read_some(asio::buffer(m_recvBuf, 255), [this, self](std::error_code ec, std::size_t length) {
+                tiny_email::Info("Recv:{}", std::string(m_recvBuf, length));
+                if (!ec)
                 {
-                    handler->OnRecive(std::string(m_recvBuf,length));
+                    auto handler = m_handler.lock();
+                    if (handler)
+                    {
+                        handler->OnRecive(std::string(m_recvBuf, length));
+                    }
+                    DoRead();
                 }
-                DoRead();
-            }
-            else
-            {
-                Close();
-            }
-        });
+                else
+                {
+                    Close();
+                }
+                });
+        }
     }
-	
+    void CTcpClient::CheckShouldClose()
+    {
+        if (m_bConnected && m_bShouldClose)
+        {
+            m_socket.close();
+        }
+    }
     void CTcpClient::HandleConnect(const asio::error_code& ec)
     {
         if(!ec)
@@ -105,7 +117,7 @@ namespace tiny_email
 
     void CTcpClient::Close()
     {
-        m_bShouldClose = true;
+        m_bShouldClose = false;
         m_bConnected = false;
     }
 }

@@ -23,7 +23,7 @@ namespace tiny_email
         
         std::string GetSendContext() const
         {
-            return std::to_string(m_code)+""+m_message;
+            return std::to_string(static_cast<int>(m_code))+""+m_message;
         }
         bool isFinish() const 
         {

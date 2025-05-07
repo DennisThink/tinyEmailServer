@@ -2,7 +2,7 @@
 #define _CPP_EMAIL_C_PROTO_CODE_H_
 namespace tiny_email
 {
-    enum ProtoCode_t:int{
+    enum class ProtoCode_t:int{
         CODE_BAD_CMD_1=1,
         CODE_ANY=2,
         CODE_250=250,
@@ -75,7 +75,7 @@ namespace tiny_email
         POP3_STEP_END,
     };
     
-    enum Pop3Code_t:int{
+    enum class Pop3Code_t:int{
         POP3_OK,
         POP3_BAD,
         POP3_VERIFY,
@@ -96,7 +96,7 @@ namespace tiny_email
         PARSE_IMAP_FAILED,
     };
 
-    enum ImapCode_t
+    enum class ImapCode_t:int
     {
         IMAP_CMD_CAPABILITY,
         IMAP_CMD_NOOP,
@@ -116,7 +116,7 @@ namespace tiny_email
         IMAP_CMD_UNKNOWN_CMD,
     };
 
-    enum IMAP_SERVER_STEP_t
+    enum class IMAP_SERVER_STEP_t:int
     {
         IMAP_STEP_SERVER_BEGIN,
         IMAP_STEP_SERVER_CONNECTED,
@@ -139,7 +139,7 @@ namespace tiny_email
         IMAP_STEP_SERVER_SEND_BAD_PARSE_CMD_ERROR,
         IMAP_STEP_SERVER_END,
     };
-    enum Smtp_Server_Step_t
+    enum class Smtp_Server_Step_t:int
     {
        SMTP_BEGIN,
        SMTP_ON_CONNECT,
@@ -153,7 +153,7 @@ namespace tiny_email
        SMTP_RECV_EMAIL_DATA,
        SMTP_END,
     };
-    enum Smtp_Step_t
+    enum class Smtp_Step_t:int
     {
        SMTP_STEP_BEGIN,
        RECEIVE_220,

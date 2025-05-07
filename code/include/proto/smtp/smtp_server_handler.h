@@ -22,11 +22,9 @@ namespace tiny_email
         std::string m_strUserAddr;
         std::string m_strPassword;
         bool m_bAuthFinish;
-        std::string m_strEmailDomain;
         std::string m_emailData;
         int m_errorCmdCount;
         std::string m_strResponse;
-        CDataBaseInterface_SHARED_PTR m_db;
         bool m_bFinished;
     public:
         bool OnEhloReq(const std::string strReq);

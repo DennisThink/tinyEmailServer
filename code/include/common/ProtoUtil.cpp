@@ -304,4 +304,22 @@ namespace tiny_email
 
     return ret;
   }
+
+  std::string CProtoUtil::CompareString(const std::string strFirst, const std::string strSecond)
+  {
+      std::string strCommon;
+      int nMinLength = std::min(strFirst.length(), strSecond.length());
+      for (int i = 0; i < nMinLength;i++)
+      {
+          if (strFirst[i] == strSecond[i])
+          {
+              strCommon += strFirst[i];
+          }
+          else
+          {
+              break;
+          }
+      }
+      return strCommon;
+  }
 } // namespace cpp_email

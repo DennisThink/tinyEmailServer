@@ -74,7 +74,7 @@ namespace tiny_email
         {
             std::string strCode = "220 ";
             std::string strTail = " Anti-spam GT for Coremail System\r\n";
-            return strCode + m_strEmailDomain + strTail;
+            return strCode + m_strDomainName + strTail;
         }
         if (step == Smtp_Server_Step_t::SMTP_RECV_HELO_FIRST)
         {
@@ -189,7 +189,7 @@ namespace tiny_email
         m_strPassword = CProtoUtil::Base64Decode(strReq);
         if(m_db)
         {
-            m_strUserAddr = tiny_email::CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strEmailDomain);
+            m_strUserAddr = tiny_email::CProtoUtil::CreateUserAddrFromNameAndDomain(m_strUserName,m_strDomainName);
             if(m_db->IsPasswordRight(m_strUserAddr,m_strPassword))
             {
                 tiny_email::Info("User{} verify Passed",m_strUserAddr);
@@ -230,6 +230,7 @@ namespace tiny_email
                 if(m_db)
                 {
                     email.emailTime_ = CProtoUtil::Now();
+                    tiny_email::Info("Email Detail :{}", email.toString());
                     m_db->SaveSendMailInfo(email);
                     tiny_email::Info("User {} email save succeed",m_strUserName);
                 }

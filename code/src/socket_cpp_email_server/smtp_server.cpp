@@ -29,7 +29,8 @@ void StartSmtpServer(const tiny_email::email_server_config &serverCfg)
         //Test Data end
         if (server.Listen(client,-1))
         {
-            tiny_email::CSmtpServerProtoHandler handler(dbPtr,tiny_email::CProtoUtil::GetSmtpDomainFromMainDomain(serverCfg.m_strDomain));
+            std::string strDomain = tiny_email::CProtoUtil::GetSmtpDomainFromMainDomain(serverCfg.m_strDomain);
+            tiny_email::CSmtpServerProtoHandler handler(dbPtr, strDomain);
 
             while (true)
             {
@@ -48,7 +49,7 @@ void StartSmtpServer(const tiny_email::email_server_config &serverCfg)
                 }
                 memset(buff, 128, 0);
                 recvLen = -1;
-                recvLen = server.Receive(client, buff, 128, false);
+                recvLen = server.Receive(client, buff, 127, false);
                 if (recvLen <= 0)
                 {
                     break;
