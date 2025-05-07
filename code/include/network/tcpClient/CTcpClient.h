@@ -16,9 +16,13 @@ namespace tiny_email
                             m_socket(std::move(sock)),
                             m_handler(handler)
                             {
-                               
+                                m_localEndPoint = m_socket.local_endpoint();
+                                m_RemoteEndPoint = m_socket.remote_endpoint();
                                 m_bConnected = true;
+                                ShowEndPointInfo(" Create ");
                             }
+        virtual ~CTcpClient();
+        void ShowEndPointInfo(const std::string strInfo);
         void Start(){DoRead();};
         bool ConnectTo(const std::string& domainName,const std::string& protoType);
         bool ConnectTo(const std::string& ip,const int Port);
@@ -38,6 +42,8 @@ namespace tiny_email
         INetWorkHandler_WEAK_PTR m_handler;
         char m_sendBuf[256];
         char m_recvBuf[256];
+        asio::ip::tcp::endpoint m_localEndPoint;
+        asio::ip::tcp::endpoint m_RemoteEndPoint;
     };
     using CTcpClient_ptr_t = std::shared_ptr<CTcpClient>;
 } // cpp_email

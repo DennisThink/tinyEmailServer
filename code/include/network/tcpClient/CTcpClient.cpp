@@ -9,9 +9,15 @@ namespace tiny_email
     m_bConnected(false),
     m_bShouldClose(false)
     {
-
+        m_localEndPoint = m_socket.local_endpoint();
+        m_RemoteEndPoint = m_socket.remote_endpoint();
+        m_bConnected = true;
+        ShowEndPointInfo(" Create ");
     }
-
+    CTcpClient::~CTcpClient()
+    {
+        ShowEndPointInfo(" Destroy ");
+    }
     bool CTcpClient::ConnectTo(const std::string& domainName,const std::string& protoType)
     {
         using namespace asio;
@@ -39,10 +45,17 @@ namespace tiny_email
         });
         return true;
     }
-    
+
+    void CTcpClient::ShowEndPointInfo(const std::string strInfo)
+    {
+        tiny_email::Info("[Local]{}:{}--->[Remote]{}:{} {}",
+            m_localEndPoint.address().to_string(),
+            m_localEndPoint.port(),
+            m_RemoteEndPoint.address().to_string(),
+            m_RemoteEndPoint.port(),strInfo.c_str());
+    }
     bool CTcpClient::Send(const std::string& strValue)
     {
-        CheckShouldClose();
         if(isConnected())
         {
 			memset(m_sendBuf,0,256);
@@ -53,9 +66,10 @@ namespace tiny_email
                 {
                     tiny_email::Info("Send:{} Length:{}",strValue,length);
                 }
-                if(m_bShouldClose)
+                else
                 {
-                    m_socket.close();
+                    tiny_email::Warn("Send:{} Length:{} Failed", strValue, length);
+                    Close();
                 }
             });
             return true;
@@ -65,7 +79,6 @@ namespace tiny_email
 
     void CTcpClient::DoRead()
     {
-        CheckShouldClose();
         if (isConnected())
         {
             memset(m_recvBuf, 0, 256);
@@ -88,13 +101,6 @@ namespace tiny_email
                 });
         }
     }
-    void CTcpClient::CheckShouldClose()
-    {
-        if (m_bConnected && m_bShouldClose)
-        {
-            m_socket.close();
-        }
-    }
     void CTcpClient::HandleConnect(const asio::error_code& ec)
     {
         if(!ec)
@@ -106,6 +112,8 @@ namespace tiny_email
             {
                 handler->OnConnected();
             }
+            m_localEndPoint = m_socket.local_endpoint();
+            m_RemoteEndPoint = m_socket.remote_endpoint();
             DoRead();
         }
         else
@@ -119,5 +127,6 @@ namespace tiny_email
     {
         m_bShouldClose = false;
         m_bConnected = false;
+        m_socket.close();
     }
 }

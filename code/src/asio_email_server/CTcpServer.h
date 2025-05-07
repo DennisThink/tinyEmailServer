@@ -26,6 +26,7 @@ class CTcpServer
     void Stop();
 
   private:
+    void CheckClients();
     void SetTimer();
     void OnTimer();
     void DoAccept();
@@ -38,6 +39,7 @@ class CTcpServer
     int m_port;
     std::string m_strDomainName;
     CDataBaseInterface_SHARED_PTR m_dataPtr;
+    std::mutex m_mutex;
 };
 
 template <class T>
@@ -60,8 +62,9 @@ void CTcpServer<T>::Stop()
 template <class T>
 void CTcpServer<T>::OnTimer()
 {
+    CheckClients();
     SetTimer();
-   tiny_email::Info("CTcpServer On Timer");
+    tiny_email::Info("CTcpServer On Timer");
 }
 
 template <class T>
@@ -77,6 +80,27 @@ void CTcpServer<T>::SetTimer()
 }
 
 template <class T>
+void CTcpServer<T>::CheckClients()
+{
+    m_mutex.lock();
+    {
+        std::size_t nCount = m_clients.size();
+        tiny_email::Info("Clients:{} ", nCount);
+        auto tempClients = m_clients;
+        m_clients.clear();
+        for (auto& item : tempClients)
+        {
+            if (!item->IsFinished() && item->IsConnected())
+            {
+                m_clients.push_back(item);
+            }
+        }
+    }
+    m_mutex.unlock();
+}
+
+
+template <class T>
 void CTcpServer<T>::DoAccept()
 {
     m_accpter->async_accept([this](std::error_code ec, asio::ip::tcp::socket sock) {
@@ -85,7 +109,12 @@ void CTcpServer<T>::DoAccept()
             auto handler = std::make_shared<T>(m_dataPtr,m_strDomainName);
             auto client = std::make_shared<CTcpClient>(m_ioService, std::move(sock), handler);
             handler->SetTcpSocket(client);
-            m_clients.push_back(handler);
+            
+            {
+                m_mutex.lock();
+                m_clients.push_back(handler);
+                m_mutex.unlock();
+            }
             handler->Start();
             DoAccept();
         }

@@ -17,7 +17,8 @@ namespace tiny_email
        virtual void OnRecive(const std::string strValue) override;
        virtual void OnTimer() override{};
        virtual void OnClose() override{};
-       virtual bool isConnected() override{return m_client->isConnected();};
+       virtual bool IsConnected() override{return m_client->isConnected();}
+       virtual bool IsFinished() override { return m_proto->IsFinished();}
        void SetTcpSocket(CTcpClient_ptr_t tcpSock)
        {
            m_client = tcpSock;

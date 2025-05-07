@@ -16,7 +16,8 @@ namespace tiny_email
        virtual void OnRecive(const std::string strValue)=0;
        virtual void OnClose()=0;
        virtual void OnTimer()=0;
-       virtual bool isConnected()=0;
+       virtual bool IsConnected()=0;
+       virtual bool IsFinished() = 0;
    }; 
    using INetWorkHandler_WEAK_PTR = std::weak_ptr<INetWorkHandler>;
    using INetWorkHandler_SHARED_PTR = std::shared_ptr<INetWorkHandler>;
