@@ -18,6 +18,16 @@ namespace tiny_email
     {
         std::string strIp_;
         int         port_;
+        std::string toString()
+        {
+            std::string strResult=" ";
+            strResult += strIp_;
+            strResult += ":";
+            strResult += std::to_string(port_);
+            strResult += " ";
+            return strResult;
+
+        }
     };
 
     struct ss_server_config
@@ -32,6 +42,33 @@ namespace tiny_email
         server_config m_smtpServer;
         server_config m_pop3Server;
         server_config m_imapServer;
+
+        std::string toString()
+        {
+            std::string strResult = " ";
+            strResult += " Domain: ";
+            strResult += m_strDomain;
+            strResult += "\r\n";
+
+            strResult += " DataBase: ";
+            strResult += m_strDataBaseName;
+            strResult += "\r\n";
+
+            strResult += " SMTP: ";
+            strResult += m_smtpServer.toString();
+            strResult += "\r\n";
+
+            strResult += " POP3: ";
+            strResult += m_pop3Server.toString();
+            strResult += "\r\n";
+
+
+            strResult += " IMAP: ";
+            strResult += m_imapServer.toString();
+            strResult += "\r\n";
+
+            return strResult;
+        }
     };
     struct senderReceiverInfo
     {

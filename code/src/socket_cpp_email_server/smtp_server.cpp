@@ -27,51 +27,54 @@ void StartSmtpServer(const tiny_email::email_server_config &serverCfg)
             }
         }
         //Test Data end
-        if (server.Listen(client,-1))
+        while (true)
         {
-            std::string strDomain = tiny_email::CProtoUtil::GetSmtpDomainFromMainDomain(serverCfg.m_strDomain);
-            tiny_email::CSmtpServerProtoHandler handler(dbPtr, strDomain);
-
-            while (true)
+            if (server.Listen(client, -1))
             {
-                std::string strRsp = handler.GetResponse();
-                if (!strRsp.empty())
+                std::string strDomain = tiny_email::CProtoUtil::GetSmtpDomainFromMainDomain(serverCfg.m_strDomain);
+                tiny_email::CSmtpServerProtoHandler handler(dbPtr, strDomain);
+
+                while (true)
                 {
-                    if (server.Send(client, strRsp))
+                    std::string strRsp = handler.GetResponse();
+                    if (!strRsp.empty())
                     {
-                        LOG_INFO(g_log, "S:{}", strRsp);
+                        if (server.Send(client, strRsp))
+                        {
+                            LOG_INFO(g_log, "S:{}", strRsp);
+                        }
+                        else
+                        {
+                            LOG_ERROR(g_log, "Send Failed {}", strRsp);
+                            break;
+                        }
                     }
-                    else
+                    memset(buff, 128, 0);
+                    recvLen = -1;
+                    recvLen = server.Receive(client, buff, 127, false);
+                    if (recvLen <= 0)
                     {
-                        LOG_ERROR(g_log, "Send Failed {}", strRsp);
+                        break;
+                    }
+                    if (recvLen > 0)
+                    {
+                        std::string strReq(buff, recvLen);
+                        LOG_INFO(g_log, "C:{}", strReq);
+                        if (handler.OnClientReq(strReq))
+                        {
+                        }
+                        else
+                        {
+                            LOG_ERROR(g_log, "Handle Client Failed");
+                        }
+                    }
+                    if (handler.IsFinished())
+                    {
+                        LOG_INFO(g_log, "Break Finished");
                         break;
                     }
                 }
-                memset(buff, 128, 0);
-                recvLen = -1;
-                recvLen = server.Receive(client, buff, 127, false);
-                if (recvLen <= 0)
-                {
-                    break;
-                }
-                if (recvLen > 0)
-                {
-                    std::string strReq(buff, recvLen);
-                    LOG_INFO(g_log, "C:{}", strReq);
-                    if (handler.OnClientReq(strReq))
-                    {
-                    }
-                    else
-                    {
-                        LOG_ERROR(g_log, "Handle Client Failed");
-                    }
-                }
-                if (handler.IsFinished())
-                {
-                    LOG_INFO(g_log, "Break Finished");
-                    break;
-                }
+                server.Disconnect(client);
             }
-            server.Disconnect(client);
         }
 }
