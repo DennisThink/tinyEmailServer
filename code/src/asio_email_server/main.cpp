@@ -17,16 +17,23 @@ int main(int argc,char* argv[])
         servercfg.m_pop3Server.port_ = 2110;
         servercfg.m_imapServer.strIp_ = "127.0.0.1";
         servercfg.m_imapServer.port_ = 2143;
+
+        std::cout << servercfg.toString() << std::endl;
         server.Start(servercfg);
     }
     {
-        std::string strFileName;
-        tiny_email::email_server_config serverCfg;
-        tiny_email::CEmailServer server;
-        if (ParseConfigFromFile(strFileName, serverCfg))
         {
-            server.Start(serverCfg);
+            std::string strFileName;
+            tiny_email::email_server_config serverCfg;
+            tiny_email::CEmailServer server;
+            if (ParseConfigFromFile(strFileName, serverCfg))
+            {
+                std::cout << serverCfg.toString() << std::endl;
+                server.Start(serverCfg);
+            }
+            
         }
+
     }
     return 0;
 }
