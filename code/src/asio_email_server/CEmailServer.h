@@ -5,7 +5,8 @@
 #include "CTcpServer.h"
 #include "CMemDataBase.h"
 #include "OldEmailServer.h"
-#include "NewEmailServer.h"
+//We don't use new version,for old version works well
+//#include "NewEmailServer.h"
 #include "user_info.h"
 namespace tiny_email 
 {
@@ -23,9 +24,9 @@ namespace tiny_email
         CPop3Server_SHARED_PTR m_pop3Handler;
         CImapServer_SHARED_PTR m_imapHandler;
 
-        CSmtpServerNew_SHARED_PTR m_smtpHandlerNew;
-        CPop3ServerNew_SHARED_PTR m_pop3HandlerNew;
-        CImapServerNew_SHARED_PTR m_imapHandlerNew;
+        //CSmtpServerNew_SHARED_PTR m_smtpHandlerNew;
+        //CPop3ServerNew_SHARED_PTR m_pop3HandlerNew;
+        //CImapServerNew_SHARED_PTR m_imapHandlerNew;
 
         CDataBaseInterface_SHARED_PTR m_dataPtr;
     };

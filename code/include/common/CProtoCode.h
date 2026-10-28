@@ -72,6 +72,7 @@ namespace tiny_email
         POP3_STEP_SERVER_SEND_LIST_OK,
         POP3_STEP_SERVER_SEND_TOP_OK,
         POP3_STEP_SERVER_SEND_QUIT_OK,
+        POP3_STEP_SERVER_WAIT_FOR_TIME_OUT,
         POP3_STEP_END,
     };
     

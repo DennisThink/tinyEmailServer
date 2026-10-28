@@ -31,6 +31,7 @@ namespace tiny_email
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_STAT, &CPop3ServerProtoHandler::OnState},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_RETR, &CPop3ServerProtoHandler::OnRetr},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_LIST, &CPop3ServerProtoHandler::OnList},
+        {POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_PASS_WORD_OK, POP3_CMD_t::POP3_CMD_QUIT, &CPop3ServerProtoHandler::OnQuit},
         {POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_SERVER_STEP_t::POP3_STEP_SERVER_ON_CONNECT, POP3_CMD_t::POP3_CMD_CAPA, &CPop3ServerProtoHandler::OnCapa},
         };
         CPop3ProtoReqCmd reqCmd;
@@ -169,6 +170,12 @@ STLS
     std::string CPop3ServerProtoHandler::GetPassWordOkSend()
     {
         return "";
+    }
+    bool CPop3ServerProtoHandler::OnQuit(const std::string& strRecv)
+    {
+        m_strResponse += "OK tiny_email\r\n";
+        m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_USER_NAME_BAD;
+        return true;
     }
     std::string CPop3ServerProtoHandler::GetNextStepCmd(const POP3_SERVER_STEP_t &step)
     {
@@ -366,6 +373,10 @@ STLS
                 m_step = POP3_SERVER_STEP_t::POP3_STEP_SERVER_SEND_DELE_OK;
             }
             break;
+            case POP3_CMD_t::POP3_CMD_QUIT:
+            {
+                return OnQuit(cmd.GetMsg());
+            }break;
             default:
             {
             }
